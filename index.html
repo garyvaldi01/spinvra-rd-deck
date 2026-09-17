@@ -12,10 +12,14 @@
   <script src="vendor/hyperframes-slideshow.global.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { width: 100%; height: 100%; overflow: hidden; background: #06070b; overscroll-behavior: none; }
+    html, body {
+      width: 100%; height: 100%; overflow: hidden; background: #06070b;
+      overscroll-behavior: none; touch-action: manipulation;
+      -webkit-user-select: none; user-select: none;
+      font-family: "Inter", system-ui, -apple-system, sans-serif;
+    }
     hyperframes-slideshow {
       display: block; position: fixed; inset: 0; background: #06070b;
-      /* Safe areas iPhone (notch / home indicator) */
       padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     }
     #stage {
@@ -26,27 +30,125 @@
     }
     hyperframes-player { position: absolute; inset: 0; width: 1920px; height: 1080px; }
 
-    /* Rotate hint — only on narrow portrait screens (phones held upright) */
-    #rotate-hint {
-      position: fixed; top: calc(12px + env(safe-area-inset-top)); left: 50%;
-      transform: translateX(-50%);
-      z-index: 1000;
+    /* ══ Puerta de entrada guiada (móvil) ══ */
+    #gate {
       display: none;
-      align-items: center; gap: 10px;
-      background: rgba(13, 17, 25, 0.92);
-      border: 1px solid rgba(240, 178, 62, 0.38);
-      color: #f4f5f7;
-      font-family: "Inter", system-ui, -apple-system, sans-serif;
-      font-size: 14px; font-weight: 600; letter-spacing: 0.02em;
-      padding: 10px 18px; border-radius: 999px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      position: fixed; inset: 0; z-index: 2000;
+      background:
+        radial-gradient(900px 600px at 80% -10%, rgba(240, 178, 62, 0.12), transparent 60%),
+        #06070b;
+      align-items: center; justify-content: center;
+      padding: max(24px, env(safe-area-inset-top)) 24px max(24px, env(safe-area-inset-bottom));
+      text-align: center;
+    }
+    #gate .g-inner { max-width: 560px; }
+    /* Teléfono animado (solo estado vertical) */
+    #gate .g-phone {
+      width: 58px; height: 96px; margin: 0 auto 30px;
+      border: 3px solid #f0b23e; border-radius: 14px;
+      position: relative;
+      animation: g-rot 1.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    }
+    #gate .g-phone::after {
+      content: ""; position: absolute; bottom: 6px; left: 50%;
+      transform: translateX(-50%);
+      width: 16px; height: 3px; border-radius: 2px; background: #f0b23e;
+    }
+    @keyframes g-rot {
+      0%, 22%   { transform: rotate(0deg); }
+      60%, 100% { transform: rotate(-90deg); }
+    }
+    #gate h1 {
+      color: #f4f5f7; font-size: 30px; font-weight: 800; letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    #gate p {
+      color: #9aa3b5; font-size: 17px; line-height: 1.5; margin-bottom: 28px;
+    }
+    .g-lang {
+      background: rgba(255,255,255,0.04); color: #9aa3b5;
+      border: 1px solid rgba(255,255,255,0.14); border-radius: 999px;
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      padding: 9px 18px; cursor: pointer;
+    }
+    .g-lang.active { background: rgba(240,178,62,0.16); color: #f0b23e; border-color: rgba(240,178,62,0.5); }
+    .g-lang:active { transform: scale(0.96); }
+    #gate .g-hint {
+      color: rgba(240, 178, 62, 0.85); font-size: 13px; font-weight: 700;
+      letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 16px;
+    }
+    #g-expand {
+      display: none;
+      width: 100%; max-width: 340px;
+      background: linear-gradient(180deg, #ffdf9e, #f0b23e);
+      color: #161206; border: 0; border-radius: 999px;
+      font-family: inherit; font-size: 19px; font-weight: 800; letter-spacing: 0.06em;
+      padding: 18px 24px; cursor: pointer;
+      box-shadow: 0 12px 40px rgba(240, 178, 62, 0.30);
+      margin-bottom: 18px;
+    }
+    #g-expand:active { transform: scale(0.97); }
+    #g-skip {
+      display: none;
+      color: #7d8593; font-size: 15px; font-weight: 600;
+      text-decoration: underline; text-underline-offset: 4px; cursor: pointer;
+    }
+    /* Estado vertical: mensaje de girar */
+    #gate.portrait .g-phone { display: block; }
+    #gate.portrait #g-expand, #gate.portrait #g-skip { display: none; }
+    /* Estado horizontal: botón ampliar */
+    #gate.landscape .g-phone { display: none; }
+    #gate.landscape #g-expand { display: block; }
+    #gate.landscape #g-skip { display: inline-block; }
+    /* Escritorio: nunca se muestra */
+    #gate.desktop { display: none !important; }
+
+    /* ══ Aviso "toca la pantalla" ══ */
+    #tap-hint {
+      position: fixed; left: 50%;
+      bottom: calc(88px + env(safe-area-inset-bottom));
+      transform: translateX(-50%) translateY(12px);
+      z-index: 1500;
+      background: rgba(13, 17, 25, 0.94);
+      border: 1px solid rgba(240, 178, 62, 0.45);
+      color: #f4f5f7; font-size: 15px; font-weight: 700; letter-spacing: 0.03em;
+      padding: 12px 22px; border-radius: 999px;
+      box-shadow: 0 10px 34px rgba(0, 0, 0, 0.55);
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.4s ease, transform 0.4s ease;
       white-space: nowrap;
-      pointer-events: none;
     }
-    #rotate-hint .ico { font-size: 17px; }
-    @media (orientation: portrait) and (max-width: 860px) {
-      #rotate-hint { display: inline-flex; }
+    #tap-hint.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ══ Selector de idioma siempre disponible ══ */
+    #lang-fab {
+      position: fixed; top: calc(14px + env(safe-area-inset-top)); right: calc(14px + env(safe-area-inset-right));
+      z-index: 1600;
+      display: flex; align-items: center; gap: 7px;
+      background: rgba(13, 17, 25, 0.88); color: #c8cfdb;
+      border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 999px;
+      font-family: inherit; font-size: 13px; font-weight: 800; letter-spacing: 0.08em;
+      padding: 8px 14px; cursor: pointer;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
     }
+    #lang-fab .globe { font-size: 15px; }
+    #lang-fab:active { transform: scale(0.95); }
+    #lang-menu {
+      position: fixed; top: calc(54px + env(safe-area-inset-top)); right: calc(14px + env(safe-area-inset-right));
+      z-index: 1601; display: none;
+      background: rgba(13, 17, 25, 0.97); border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 16px; padding: 6px; min-width: 150px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+    }
+    #lang-menu.open { display: block; }
+    #lang-menu button {
+      display: block; width: 100%; text-align: left;
+      background: transparent; color: #c8cfdb; border: 0; border-radius: 10px;
+      font-family: inherit; font-size: 14px; font-weight: 600;
+      padding: 11px 14px; cursor: pointer;
+    }
+    #lang-menu button.active { background: rgba(240, 178, 62, 0.16); color: #f0b23e; font-weight: 800; }
+    #lang-menu button:active { background: rgba(255, 255, 255, 0.08); }
   </style>
 </head>
 <body>
@@ -85,17 +187,223 @@
       "slideSequences": []
     }
     </script>
+
+    <!-- Selector de idioma (dentro del slideshow para verse también en pantalla completa) -->
+    <button id="lang-fab" type="button" aria-label="Language"><span class="globe">🌐</span><span id="lang-fab-code">ES</span></button>
+    <div id="lang-menu">
+      <button data-lang="es" type="button">Español</button>
+      <button data-lang="en" type="button">English</button>
+      <button data-lang="pt" type="button">Português</button>
+    </div>
   </hyperframes-slideshow>
 
-  <div id="rotate-hint"><span class="ico">📱↔️</span> Gira tu teléfono para ver mejor</div>
+  <!-- Puerta de entrada guiada -->
+  <div id="gate">
+    <div class="g-inner">
+      <div class="g-phone"></div>
+      <div class="g-hint">Spinvra RD</div>
+      <div id="g-langs" style="display:flex; gap:8px; justify-content:center; margin-bottom:22px;">
+        <button class="g-lang" data-lang="es" type="button">Español</button>
+        <button class="g-lang" data-lang="en" type="button">English</button>
+        <button class="g-lang" data-lang="pt" type="button">Português</button>
+      </div>
+      <h1 id="g-title">Gira tu teléfono</h1>
+      <p id="g-sub">Coloca el teléfono en horizontal<br>para ver la presentación</p>
+      <button id="g-expand" type="button">⛶&nbsp;&nbsp;<span id="g-expand-t">AMPLIAR PANTALLA</span></button>
+      <a id="g-skip">Continuar sin ampliar</a>
+    </div>
+  </div>
 
-  <script>
-    // Fit the fixed 1920x1080 stage to the viewport (letterboxed).
-    // Uses visualViewport when available so iOS Safari's collapsible
-    // address bar never crops or leaves gaps.
+  <div id="tap-hint">👆 Toca la pantalla para avanzar</div>    <script>
+    // ══ Multilenguaje ══
+    var I18N = {
+      es: {
+        rotate: "Gira tu teléfono",
+        rotateSub: "Coloca el teléfono en horizontal<br>para ver la presentación",
+        ready: "¿Listo para presentar?",
+        readySub: "Amplía a pantalla completa<br>para una mejor experiencia",
+        expand: "AMPLIAR PANTALLA",
+        skip: "Continuar sin ampliar",
+        tap: "👆 Toca la pantalla para avanzar"
+      },
+      en: {
+        rotate: "Rotate your phone",
+        rotateSub: "Turn your phone sideways<br>to view the presentation",
+        ready: "Ready to present?",
+        readySub: "Go fullscreen<br>for the best experience",
+        expand: "FULLSCREEN",
+        skip: "Continue without fullscreen",
+        tap: "👆 Tap the screen to advance"
+      },
+      pt: {
+        rotate: "Vire o telefone",
+        rotateSub: "Coloque o telefone na horizontal<br>para ver a apresentação",
+        ready: "Pronto para apresentar?",
+        readySub: "Amplie para tela cheia<br>para uma melhor experiência",
+        expand: "TELA CHEIA",
+        skip: "Continuar sem tela cheia",
+        tap: "👆 Toque na tela para avançar"
+      }
+    };
+    var userLang = "es";
+    try { userLang = localStorage.getItem("hf-lang") || (navigator.language || "es").slice(0, 2).toLowerCase(); } catch (e) { userLang = (navigator.language || "es").slice(0, 2).toLowerCase(); }
+    if (!I18N[userLang]) userLang = "es";
+
+    function pushLangToDeck(l) {
+      var player = document.querySelector("hyperframes-player");
+      var win = null;
+      try { win = (player && player.contentWindow) || null; } catch (err) {}
+      if (!win && player) { try { var f = player.querySelector("iframe") || player.shadowRoot && player.shadowRoot.querySelector("iframe"); win = f && f.contentWindow; } catch (err) {} }
+      if (win) { try { win.postMessage({ type: "hf-lang", lang: l }, "*"); } catch (err) {} }
+    }
+
+    function applyLang(l) {
+      userLang = l;
+      var t = I18N[l];
+      document.getElementById("g-expand-t").textContent = t.expand;
+      document.getElementById("g-skip").textContent = t.skip;
+      document.getElementById("tap-hint").textContent = t.tap;
+      var btns = document.querySelectorAll(".g-lang");
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].className = "g-lang" + (btns[i].getAttribute("data-lang") === l ? " active" : "");
+      }
+      var mBtns = document.querySelectorAll("#lang-menu button");
+      for (var j = 0; j < mBtns.length; j++) {
+        mBtns[j].className = mBtns[j].getAttribute("data-lang") === l ? "active" : "";
+      }
+      document.getElementById("lang-fab-code").textContent = l.toUpperCase();
+      try { localStorage.setItem("hf-lang", l); } catch (e) {}
+      pushLangToDeck(l);
+      refreshGate();
+    }
+    var langBtns = document.querySelectorAll(".g-lang, #lang-menu button");
+    for (var li = 0; li < langBtns.length; li++) {
+      langBtns[li].addEventListener("click", function (e) {
+        e.stopPropagation();
+        applyLang(this.getAttribute("data-lang"));
+        document.getElementById("lang-menu").classList.remove("open");
+      });
+    }
+    document.getElementById("lang-fab").addEventListener("click", function (e) {
+      e.stopPropagation();
+      document.getElementById("lang-menu").classList.toggle("open");
+    });
+    document.addEventListener("click", function (e) {
+      var menu = document.getElementById("lang-menu");
+      if (menu.classList.contains("open") && !menu.contains(e.target) && e.target.id !== "lang-fab") {
+        menu.classList.remove("open");
+      }
+    });
+
     (function () {
-      var stage = document.getElementById("stage");
-      function fit() {
+      var sl = document.querySelector("hyperframes-slideshow");
+      var gate = document.getElementById("gate");
+      var gTitle = document.getElementById("g-title");
+      var gSub = document.getElementById("g-sub");
+      var tapHint = document.getElementById("tap-hint");
+
+      // Touch / móvil detection: trackpads report pointer:coarse? No — phones/tablets do.
+      var isTouch =
+        (window.matchMedia && window.matchMedia("(hover: none) and (pointer: coarse)").matches) ||
+        ("ontouchstart" in window) ||
+        (navigator.maxTouchPoints > 0 && window.matchMedia("(pointer: coarse)").matches);
+
+      function inPortrait() {
+        return window.innerHeight > window.innerWidth;
+      }
+
+      var gateUp = false;
+
+      function refreshGate() {
+        var t = I18N[userLang];
+        if (inPortrait()) {
+          gate.className = "portrait";
+          gTitle.textContent = t.rotate;
+          gSub.innerHTML = t.rotateSub;
+        } else {
+          gate.className = "landscape";
+          gTitle.textContent = t.ready;
+          gSub.innerHTML = t.readySub;
+        }
+      }
+
+      function showGate() {
+        if (!isTouch) { gate.className = "desktop"; return; }
+        gateUp = true;
+        refreshGate();
+        gate.style.display = "flex";
+      }
+
+      function hideGate() {
+        gateUp = false;
+        gate.style.display = "none";
+        flashTapHint();
+      }
+
+      var hintTimer = null;
+      function flashTapHint() {
+        if (!isTouch) return;
+        tapHint.textContent = I18N[userLang].tap;
+        tapHint.classList.add("show");
+        if (hintTimer) clearTimeout(hintTimer);
+        hintTimer = setTimeout(function () { tapHint.classList.remove("show"); }, 3500);
+      }
+
+      document.getElementById("g-expand").addEventListener("click", function () {
+        var fs = sl.requestFullscreen || sl.webkitRequestFullscreen;
+        if (fs) {
+          try {
+            var p = fs.call(sl, { navigationUI: "hide" });
+            if (p && p.catch) p.catch(function () {});
+          } catch (e) {}
+        }
+        try {
+          if (screen.orientation && screen.orientation.lock) {
+            var lp = screen.orientation.lock("landscape");
+            if (lp && lp.catch) lp.catch(function () {});
+          }
+        } catch (e) {}
+        hideGate();
+      });
+
+      document.getElementById("g-skip").addEventListener("click", hideGate);
+
+      // Tocar la pantalla = avanzar (solo en táctil).
+      // El player vive en un iframe que consume los toques: la composición
+      // reenvía tap/swipe vía postMessage y aquí los convertimos en navegación,
+      // pulsando los botones internos del componente (vía probada).
+      function pressNext() {
+        var b = document.querySelector('[data-hf-next]');
+        if (b) { b.click(); return true; }
+        try { sl.next(); } catch (e) {}
+      }
+      function pressPrev() {
+        var b = document.querySelector('[data-hf-prev]');
+        if (b) { b.click(); return true; }
+        try { sl.prev(); } catch (e) {}
+      }
+      var taps = 0;
+      window.addEventListener("message", function (e) {
+        var d = e.data;
+        if (!d || d.type !== "hf-gesture") return;
+        if (gateUp) return; // puerta abierta → ignorar gestos
+        if (d.action === "next") {
+          pressNext();
+          taps++;
+          if (taps >= 4) tapHint.classList.remove("show");
+        } else if (d.action === "prev") {
+          pressPrev();
+        }
+      });
+
+      window.addEventListener("resize", function () {
+        // Refit del escenario
+        fit();
+        refreshGate();
+      });
+
+      // ══ Fit 1920x1080 con visualViewport (barra de Safari) ══
+      window.__fitStage = function () {
         var w = window.innerWidth, h = window.innerHeight;
         if (window.visualViewport) {
           w = Math.max(w, window.visualViewport.width);
@@ -103,14 +411,20 @@
         }
         var s = Math.min(w / 1920, h / 1080);
         stage.style.transform = "translate(-50%, -50%) scale(" + s + ")";
-      }
-      window.addEventListener("resize", fit);
+      };
+      function fit() { window.__fitStage(); }
       window.addEventListener("orientationchange", function () { setTimeout(fit, 250); });
       if (window.visualViewport) window.visualViewport.addEventListener("resize", fit);
       fit();
-      // Keep keyboard focus on the slideshow element so arrow keys work (desktop).
-      var sl = document.querySelector("hyperframes-slideshow");
+
+      showGate();
+
+      // Mantener foco para teclado (escritorio)
       window.addEventListener("pointerdown", function () { if (sl) sl.focus(); });
+      applyLang(userLang);
+      // La composición puede tardar en cargar: reenviar el idioma cuando esté lista.
+      setTimeout(function () { pushLangToDeck(userLang); }, 800);
+      setTimeout(function () { pushLangToDeck(userLang); }, 2500);
     })();
   </script>
 </body>
