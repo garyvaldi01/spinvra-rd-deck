@@ -1,0 +1,1110 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <title>Spinvra RD — Propuesta de Adquisición y Crecimiento</title>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #06070b;
+      --surface: #0d1119;
+      --surface2: #111726;
+      --line: rgba(255, 255, 255, 0.08);
+      --ink: #f4f5f7;
+      --dim: #9aa3b5;
+      --faint: rgba(255, 255, 255, 0.55);
+      --gold: #f0b23e;
+      --gold-soft: rgba(240, 178, 62, 0.14);
+      --gold-line: rgba(240, 178, 62, 0.38);
+      --blue: #5b8def;
+      --blue-soft: rgba(91, 141, 239, 0.14);
+      --f-display: "Inter", "SF Pro Display", "Segoe UI", system-ui, -apple-system, sans-serif;
+      --f-mono: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 1920px; height: 1080px; overflow: hidden;
+      background: var(--bg);
+      font-family: var(--f-display);
+      -webkit-font-smoothing: antialiased;
+    }
+    .scene {
+      position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; overflow: hidden;
+      background: var(--bg); color: var(--ink);
+    }
+    .bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, #07080d 0%, #06070b 100%);
+    }
+    .bg.glow {
+      background:
+        radial-gradient(1000px 640px at 86% -12%, rgba(240, 178, 62, 0.10), transparent 62%),
+        radial-gradient(950px 720px at -8% 112%, rgba(91, 141, 239, 0.08), transparent 60%),
+        linear-gradient(180deg, #07080d 0%, #06070b 100%);
+    }
+    .bg::after {
+      content: ""; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+      background-size: 120px 120px;
+      -webkit-mask-image: radial-gradient(1200px 800px at 50% 40%, rgba(0,0,0,0.9), transparent 85%);
+              mask-image: radial-gradient(1200px 800px at 50% 40%, rgba(0,0,0,0.9), transparent 85%);
+    }
+    .stage { position: absolute; inset: 0; padding: 96px 120px 120px; }
+    .foot {
+      position: absolute; left: 120px; right: 120px; bottom: 44px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 19px; letter-spacing: 0.24em;      color: rgb(138, 142, 150);
+      text-transform: uppercase;
+    }
+    .foot .pg { font-family: var(--f-mono); letter-spacing: 0.1em; }
+    .eyebrow {
+      font-size: 22px; font-weight: 600; letter-spacing: 0.38em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 26px;
+    }
+    .h1 { font-size: 72px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.06; }
+    .h1 .g { color: var(--gold); }
+    .sub { font-size: 30px; color: var(--dim); line-height: 1.45; font-weight: 400; }
+    .dim { color: var(--dim); }
+    .gold { color: var(--gold); }
+    .blue { color: var(--blue); }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012));
+      border: 1px solid var(--line); border-radius: 20px;
+    }
+    .chip {
+      display: inline-flex; align-items: center; gap: 12px;
+      border: 1px solid var(--line); border-radius: 999px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 14px 28px; font-size: 24px; font-weight: 600; color: var(--ink);
+      white-space: nowrap;
+    }
+    .chip .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gold); }
+    .chip.blue .dot { background: var(--blue); }
+    .klabel {
+      font-size: 20px; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--faint); font-weight: 600;
+    }
+    .rv { opacity: 0; }
+    .num-hero {
+      font-weight: 800; letter-spacing: -0.04em; line-height: 0.95;
+      background: linear-gradient(180deg, #ffe3a1 0%, #f0b23e 55%, #c77e1f 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      filter: drop-shadow(0 24px 70px rgba(240, 178, 62, 0.22));
+    }
+    .tag {
+      display: inline-block; font-size: 15px; letter-spacing: 0.22em; font-weight: 700;
+      color: var(--gold); border: 1px solid var(--gold-line); border-radius: 6px;
+      padding: 5px 10px; text-transform: uppercase;
+    }
+    .arrow-r {
+      font-size: 40px; color: rgba(240, 178, 62, 0.75); font-weight: 300;
+      display: flex; align-items: center; justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <script type="application/hyperframes-slideshow+json">
+  {
+    "slides": [
+      { "sceneId": "cover", "notes": "Apertura: propuesta de adquisición y crecimiento para Spinvra en República Dominicana. Enfatizar que es una capa adicional, no un reemplazo." },
+      { "sceneId": "resumen", "notes": "Resumen ejecutivo: activo de ~10,700 contactos + método Probar-Medir-Optimizar-Escalar + piloto de 300-500. Cerrar con los cinco motores.", "fragments": [10.0] },
+      { "sceneId": "experiencia", "notes": "Experiencia previa en el sector de casinos. Presentar como trayectoria, no como portafolio ni alianzas vigentes." },
+      { "sceneId": "activo", "notes": "Transición: la experiencia se convierte en el activo de 10,700 contactos y en la oportunidad para Spinvra." },
+      { "sceneId": "numero", "notes": "Diapositiva de impacto: 10,700 contactos potenciales. Pausa dramática. Es el activo inicial, no un límite." },
+      { "sceneId": "oportunidad", "notes": "Complementar, no competir: Spinvra ya genera visibilidad; esta propuesta añade conversión medible local." },
+      { "sceneId": "objetivo", "notes": "Pregunta central: cómo convertir ~10,700 contactos en un canal medible, optimizable y escalable.", "fragments": [44.5] },
+      { "sceneId": "metodologia", "notes": "Ciclo continuo: Probar, Medir, Optimizar, Escalar. La base se trata como activo estratégico; nunca se contacta todo de una vez." },
+      { "sceneId": "piloto", "notes": "Fase 1: piloto de 300-500 contactos. Qué probamos y qué medimos. Aclarar que son fases de alcance, no resultados garantizados.", "fragments": [58.0, 59.5] },
+      { "sceneId": "captacion", "notes": "Segmentación según datos autorizados + tres conceptos comparativos: Promoción, Comunidad, Experiencia.", "fragments": [64.5, 66.0, 67.5] },
+      { "sceneId": "funnel", "notes": "Funnel conceptual: audiencia, contacto, registro, primer depósito, comunidad, referido. Cada etapa se mide.", "fragments": [72.5, 74.0, 75.5] },
+      { "sceneId": "comunidad", "notes": "Spinvra Community: WhatsApp y Telegram como canal de valor continuo, no un grupo de enlaces.", "fragments": [81.0] },
+      { "sceneId": "promociones", "notes": "Códigos diarios US$1-US$77, dinámicas para generar recurrencia y niveles de campaña hasta Big Week como acelerador futuro.", "fragments": [88.5, 90.5] },
+      { "sceneId": "remarketing", "notes": "Cuatro estados del usuario con estrategias distintas, frecuencia controlada.", "fragments": [96.0, 97.5, 99.0] },
+      { "sceneId": "referidos", "notes": "Programa de referidos de 3 niveles como segundo motor. Ejemplo ilustrativo sobre primer depósito de US$10.", "fragments": [104.0, 105.5] },
+      { "sceneId": "equipo", "notes": "Capacidad de ejecución local: dirección, diseño, contenido, community y data. Transmite organización, no arrogancia." },
+      { "sceneId": "metricas", "notes": "Dashboard de métricas. Sin resultados inventados: placeholders ilustrativos que se llenan con datos reales.", "fragments": [119.0, 121.0] },
+      { "sceneId": "plan", "notes": "Plan de 30 días semana a semana y horizonte 30-90 días.", "fragments": [128.5, 130.5] },
+      { "sceneId": "escalamiento", "notes": "Etapas de escala progresiva: 300-500, 1,000-1,500, 2,500-3,500 y nuevos segmentos. Cada etapa se abre según resultados.", "fragments": [135.0, 136.5, 138.0] },
+      { "sceneId": "activaciones", "notes": "Segunda etapa: activaciones y promociones cruzadas medibles. Modelo de tres partes y funnel de medición." },
+      { "sceneId": "puntacana", "notes": "Punta Cana como ventaja operativa adicional. Primero validar el modelo digital; después explorar la capa física." },
+      { "sceneId": "cierre", "notes": "Cierre: 10,700 es el punto de partida. Construir un sistema de crecimiento. Probar, medir, optimizar, escalar." }
+    ],
+    "slideSequences": []
+  }
+  </script>
+
+  <!-- ============ 01 · PORTADA ============ -->
+  <div class="scene" id="sc-cover" data-composition-id="cover" data-start="0" data-duration="7" data-label="Portada" data-width="1920" data-height="1080">
+    <div class="bg glow"></div>
+    <section id="st-cover" class="clip stage" data-start="0" data-duration="7" data-track-index="0" style="display:flex; flex-direction:column; justify-content:center;">
+      <div id="cv-eyebrow" class="rv eyebrow">Propuesta de adquisición y crecimiento</div>
+      <div id="cv-title" class="rv" style="font-size:168px; font-weight:800; letter-spacing:-0.03em; line-height:1;">SPINVRA</div>
+      <div id="cv-country" class="rv" style="font-size:52px; font-weight:700; letter-spacing:0.14em; color:var(--gold); margin-top:10px; text-transform:uppercase;">República Dominicana</div>
+      <div id="cv-sub" class="rv sub" style="max-width:1050px; margin-top:44px;">
+        Una nueva capa de adquisición local que complementa las acciones existentes de Spinvra: visibilidad que ya se genera hoy, convertida en registros, primeros depósitos y crecimiento medible.
+      </div>
+      <div id="cv-chips" class="rv" style="display:flex; gap:18px; margin-top:56px;">
+        <span class="chip"><span class="dot"></span>Adquisición</span>
+        <span class="chip"><span class="dot"></span>Conversión</span>
+        <span class="chip"><span class="dot"></span>Retención</span>
+        <span class="chip"><span class="dot"></span>Referidos</span>
+        <span class="chip"><span class="dot"></span>Escala</span>
+      </div>
+      <footer class="foot">
+        <span>Spinvra RD · Propuesta de crecimiento</span>
+        <span class="pg">01 / 22</span>
+      </footer>
+    </section>
+  </div>
+
+  <!-- ============ 02 · RESUMEN EJECUTIVO ============ -->
+  <div class="scene" id="sc-resumen" data-composition-id="resumen" data-start="7" data-duration="6" data-label="Resumen ejecutivo" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-resumen" class="clip stage" data-start="7" data-duration="6" data-track-index="0">
+      <div id="rs-eyebrow" class="rv eyebrow">Resumen ejecutivo</div>
+      <h1 id="rs-h" class="rv h1">Un activo existente.<br><span class="g">Un sistema para convertirlo en crecimiento.</span></h1>
+      <p id="rs-sub" class="rv sub" style="max-width:1300px; margin-top:30px;">
+        Spinvra ya opera y ya genera visibilidad con influencers y acciones promocionales. Esta propuesta añade una capa local de adquisición, conversión y comunidad — construida sobre un activo concreto.
+      </p>
+      <div style="display:flex; gap:24px; margin-top:52px;">
+        <div id="rs-c1" class="rv card" style="flex:1; padding:36px 40px;">
+          <div class="klabel">Activo</div>
+          <div style="font-size:56px; font-weight:800; margin-top:14px;" class="gold">~10,700</div>
+          <div class="dim" style="font-size:24px; margin-top:8px;">contactos del sector de casinos y juegos</div>
+        </div>
+        <div id="rs-c2" class="rv card" style="flex:1; padding:36px 40px;">
+          <div class="klabel">Método</div>
+          <div style="font-size:38px; font-weight:800; margin-top:16px;">Probar · Medir<br>Optimizar · Escalar</div>
+          <div class="dim" style="font-size:24px; margin-top:10px;">decisiones basadas en datos</div>
+        </div>
+        <div id="rs-c3" class="rv card" style="flex:1; padding:36px 40px;">
+          <div class="klabel">Arranque</div>
+          <div style="font-size:56px; font-weight:800; margin-top:14px;">300–500</div>
+          <div class="dim" style="font-size:24px; margin-top:8px;">contactos en el piloto inicial</div>
+        </div>
+      </div>
+      <div id="rs-motors-label" class="rv klabel" style="margin-top:56px;">Cinco motores, un solo sistema</div>
+      <div id="rs-motors" class="rv" style="display:flex; gap:16px; margin-top:20px;">
+        <span class="chip"><span class="dot"></span>Adquisición</span>
+        <span class="chip"><span class="dot"></span>Conversión</span>
+        <span class="chip"><span class="dot"></span>Comunidad</span>
+        <span class="chip"><span class="dot"></span>Remarketing</span>
+        <span class="chip"><span class="dot"></span>Referidos</span>
+      </div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">02 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 03 · EXPERIENCIA PREVIA ============ -->
+  <div class="scene" id="sc-experiencia" data-composition-id="experiencia" data-start="13" data-duration="7" data-label="Experiencia previa en el sector" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-experiencia" class="clip stage" data-start="13" data-duration="7" data-track-index="0">
+      <div id="ex-eyebrow" class="rv eyebrow">Experiencia previa en el sector</div>
+      <h1 id="ex-h" class="rv h1">Experiencia que respalda <span class="g">la estrategia</span></h1>
+      <p id="ex-sub" class="rv sub" style="max-width:1350px; margin-top:28px;">
+        Nuestra propuesta parte de experiencia práctica trabajando con marcas y operaciones del sector de casinos, tanto en entornos físicos como digitales: captación, promociones, activaciones y comunicación con este tipo de audiencia.
+      </p>
+      <div style="display:flex; gap:24px; margin-top:56px;">
+        <div id="ex-b1" class="rv card" style="flex:1.25; padding:44px 40px; display:flex; flex-direction:column; justify-content:center; border-top:3px solid var(--gold);">
+          <div style="font-size:36px; font-weight:800; letter-spacing:0.02em;">CASINO CLUB RV</div>
+          <div class="gold" style="font-size:24px; font-weight:600; margin-top:14px;">Online · ClubRBet.com</div>
+          <div class="dim" style="font-size:23px; margin-top:12px;">Experiencia relacionada con su operación online.</div>
+        </div>
+        <div id="ex-b2" class="rv card" style="flex:1; padding:44px 40px; display:flex; flex-direction:column; justify-content:center; border-top:3px solid rgba(240,178,62,0.55);">
+          <div style="font-size:36px; font-weight:800; letter-spacing:0.02em;">CASINO AVALON</div>
+          <div class="dim" style="font-size:23px; margin-top:16px;">Experiencia en acciones del sector de casino y promoción.</div>
+        </div>
+        <div id="ex-b3" class="rv card" style="flex:1; padding:44px 40px; display:flex; flex-direction:column; justify-content:center; border-top:3px solid rgba(240,178,62,0.55);">
+          <div style="font-size:36px; font-weight:800; letter-spacing:0.02em;">CASINO FLAMBOLYAN</div>
+          <div class="dim" style="font-size:23px; margin-top:16px;">Experiencia en acciones del sector de casino y promoción.</div>
+        </div>
+      </div>
+      <div id="ex-line" class="rv" style="margin-top:48px; display:flex; align-items:center; gap:20px;">
+        <div style="width:56px; height:2px; background:var(--gold);"></div>
+        <div style="font-size:28px; font-weight:600;">Experiencia en entornos físicos y digitales del sector.</div>
+      </div>
+      <div id="ex-note" class="rv dim" style="font-size:21px; margin-top:18px;">Marcas con las que hemos trabajado previamente. Experiencia acumulada en el sector; sin alianzas oficiales vigentes.</div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">03 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 04 · DE LA EXPERIENCIA AL ACTIVO ============ -->
+  <div class="scene" id="sc-activo" data-composition-id="activo" data-start="20" data-duration="7" data-label="De la experiencia al activo" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-activo" class="clip stage" data-start="20" data-duration="7" data-track-index="0" style="display:grid; grid-template-columns: 1fr 640px; gap:90px; align-items:center;">
+      <div>
+        <div id="da-eyebrow" class="rv eyebrow">Trayectoria</div>
+        <h1 id="da-h" class="rv h1">De la experiencia<br><span class="g">al activo</span></h1>
+        <p id="da-q" class="rv sub" style="margin-top:36px; max-width:760px;">
+          Los aproximadamente 10,700 contactos no aparecen de manera aislada: forman parte de una trayectoria previa trabajando y desarrollando relaciones dentro de este sector.
+        </p>
+        <div id="da-note" class="rv dim" style="margin-top:30px; font-size:24px;">Conocimiento del mercado · dinámicas promocionales · comportamiento de la audiencia.</div>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:stretch;">
+        <div id="da-f1" class="rv card" style="padding:22px 32px; font-size:26px; font-weight:600; letter-spacing:0.08em; color:var(--faint); text-transform:uppercase;">Experiencia en el sector</div>
+        <div class="arrow-r">↓</div>
+        <div id="da-f2" class="rv card" style="padding:22px 32px; font-size:26px; font-weight:600; letter-spacing:0.08em; color:var(--faint); text-transform:uppercase;">Conocimiento del público</div>
+        <div class="arrow-r">↓</div>
+        <div id="da-f3" class="rv card" style="padding:22px 32px; font-size:26px; font-weight:600; letter-spacing:0.08em; color:var(--faint); text-transform:uppercase;">Audiencia potencial</div>
+        <div class="arrow-r">↓</div>
+        <div id="da-f4" class="rv card" style="padding:26px 32px; border:1px solid var(--gold-line); background:var(--gold-soft); display:flex; align-items:baseline; justify-content:space-between;">
+          <span class="num-hero" style="font-size:84px;">10,700</span>
+          <span style="font-size:26px; font-weight:700; letter-spacing:0.1em;">CONTACTOS</span>
+        </div>
+        <div class="arrow-r">↓</div>
+        <div id="da-f5" class="rv card" style="padding:22px 32px; font-size:26px; font-weight:700; letter-spacing:0.06em; color:var(--gold); text-transform:uppercase;">Oportunidad de adquisición para Spinvra</div>
+      </div>
+      <footer class="foot" style="grid-column:1 / -1;"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">04 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 05 · 10,700 ============ -->
+  <div class="scene" id="sc-numero" data-composition-id="numero" data-start="27" data-duration="8" data-label="10,700 contactos" data-width="1920" data-height="1080">
+    <div class="bg glow"></div>
+    <section id="st-numero" class="clip stage" data-start="27" data-duration="8" data-track-index="0" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+      <div id="nm-eyebrow" class="rv eyebrow">Nuestro punto de partida</div>
+      <div id="nm-num" class="rv num-hero" style="font-size:340px;">10,700</div>
+      <div id="nm-cap" class="rv" style="font-size:44px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; margin-top:18px;">Contactos potenciales</div>
+      <div id="nm-sub" class="rv sub" style="max-width:1100px; margin-top:30px;">
+        Una audiencia relacionada previamente con el sector de casinos y juegos — lista para una estrategia de captación progresiva.
+      </div>
+      <div id="nm-note" class="rv" style="margin-top:44px;"><span class="tag">Activo inicial — no un límite</span></div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">05 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 06 · LA OPORTUNIDAD ============ -->
+  <div class="scene" id="sc-oportunidad" data-composition-id="oportunidad" data-start="35" data-duration="6" data-label="La oportunidad" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-oportunidad" class="clip stage" data-start="35" data-duration="6" data-track-index="0">
+      <div id="op-eyebrow" class="rv eyebrow">La oportunidad</div>
+      <h1 id="op-h" class="rv h1">De visibilidad <span class="g">a conversión</span></h1>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:28px; margin-top:52px;">
+        <div id="op-col1" class="rv card" style="padding:40px 44px;">
+          <div class="klabel" style="margin-bottom:28px;">Lo que Spinvra ya tiene</div>
+          <div style="display:flex; flex-direction:column; gap:22px; font-size:28px; font-weight:600;">
+            <div style="display:flex; gap:16px; align-items:center;"><span class="dot" style="width:9px;height:9px;border-radius:50%;background:var(--blue);display:inline-block;"></span>Plataforma y tecnología en operación</div>
+            <div style="display:flex; gap:16px; align-items:center;"><span class="dot" style="width:9px;height:9px;border-radius:50%;background:var(--blue);display:inline-block;"></span>Influencers y acciones promocionales</div>
+            <div style="display:flex; gap:16px; align-items:center;"><span class="dot" style="width:9px;height:9px;border-radius:50%;background:var(--blue);display:inline-block;"></span>Códigos promocionales diarios</div>
+            <div style="display:flex; gap:16px; align-items:center;"><span class="dot" style="width:9px;height:9px;border-radius:50%;background:var(--blue);display:inline-block;"></span>Programa de referidos de 3 niveles</div>
+          </div>
+        </div>
+        <div id="op-col2" class="rv card" style="padding:40px 44px; border:1px solid var(--gold-line); background:var(--gold-soft);">
+          <div class="klabel gold" style="margin-bottom:28px;">Lo que añade esta propuesta</div>
+          <div style="display:flex; flex-direction:column; gap:22px; font-size:28px; font-weight:600;">
+            <div style="display:flex; gap:16px; align-items:center;"><span class="dot" style="width:9px;height:9px;border-radius:50%;background:var(--gold);display:inline-block;"></span>Captación local dirigida y progresiva</div>
+            <div style="display:flex; gap:16px; align-items:center;"><span class="dot" style="width:9px;height:9px;border-radius:50%;background:var(--gold);display:inline-block;"></span>Conversión paso a paso hasta el depósito</div>
+            <div style="display:flex; gap:16px; align-items:center;"><span class="dot" style="width:9px;height:9px;border-radius:50%;background:var(--gold);display:inline-block;"></span>Comunidad y remarketing permitido</div>
+            <div style="display:flex; gap:16px; align-items:center;"><span class="dot" style="width:9px;height:9px;border-radius:50%;background:var(--gold);display:inline-block;"></span>Medición por canal y por campaña</div>
+          </div>
+        </div>
+      </div>
+      <p id="op-line" class="rv" style="margin-top:48px; font-size:30px; font-weight:600; text-align:center;">
+        Las acciones existentes generan visibilidad. <span class="gold">Esta propuesta añade la estructura que la convierte en crecimiento.</span>
+      </p>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">06 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 07 · OBJETIVO ESTRATÉGICO ============ -->
+  <div class="scene" id="sc-objetivo" data-composition-id="objetivo" data-start="41" data-duration="6" data-label="Objetivo estratégico" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-objetivo" class="clip stage" data-start="41" data-duration="6" data-track-index="0" style="display:flex; flex-direction:column; justify-content:center;">
+      <div id="ob-eyebrow" class="rv eyebrow">Objetivo estratégico</div>
+      <h1 id="ob-q" class="rv" style="font-size:88px; font-weight:800; letter-spacing:-0.025em; line-height:1.12; max-width:1560px;">
+        ¿Cómo convertimos <span class="gold">~10,700 contactos</span> en un canal de adquisición <span class="gold">medible, optimizable y escalable?</span>
+      </h1>
+      <div id="ob-chips" class="rv" style="display:flex; gap:20px; margin-top:64px;">
+        <span class="chip" style="font-size:26px; padding:18px 34px;"><span class="dot"></span>Medible</span>
+        <span class="chip" style="font-size:26px; padding:18px 34px;"><span class="dot"></span>Optimizable</span>
+        <span class="chip" style="font-size:26px; padding:18px 34px;"><span class="dot"></span>Escalable</span>
+        <span class="chip blue" style="font-size:26px; padding:18px 34px;"><span class="dot"></span>Complementario a lo existente</span>
+      </div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">07 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 08 · METODOLOGÍA ============ -->
+  <div class="scene" id="sc-metodologia" data-composition-id="metodologia" data-start="47" data-duration="8" data-label="Metodología" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-metodologia" class="clip stage" data-start="47" data-duration="8" data-track-index="0" style="display:grid; grid-template-columns:1fr 620px; gap:80px; align-items:center;">
+      <div>
+        <div id="mt-eyebrow" class="rv eyebrow">Metodología</div>
+        <h1 id="mt-h" class="rv h1">Probar · Medir<br><span class="g">Optimizar · Escalar</span></h1>
+        <p id="mt-sub" class="rv sub" style="margin-top:34px; max-width:720px;">
+          La base no se contacta de una sola vez. Se trata como un activo estratégico: cada ciclo comienza pequeño, se mide y solo escala lo que demuestra resultados.
+        </p>
+        <div id="mt-chips" class="rv" style="display:flex; flex-wrap:wrap; gap:14px; margin-top:44px; max-width:760px;">
+          <span class="chip" style="font-size:22px; padding:12px 22px;"><span class="dot"></span>Piloto de 300–500</span>
+          <span class="chip" style="font-size:22px; padding:12px 22px;"><span class="dot"></span>Diferentes mensajes</span>
+          <span class="chip" style="font-size:22px; padding:12px 22px;"><span class="dot"></span>Diferentes promociones</span>
+          <span class="chip" style="font-size:22px; padding:12px 22px;"><span class="dot"></span>Solo escala lo que funciona</span>
+        </div>
+      </div>
+      <div id="mt-ring" class="rv" style="position:relative; width:620px; height:620px;">
+        <svg viewBox="0 0 560 560" width="620" height="620" style="position:absolute; inset:0;">
+          <circle cx="280" cy="280" r="206" fill="none" stroke="rgba(240,178,62,0.30)" stroke-width="2.5" stroke-dasharray="12 16" />
+          <g transform="translate(425.7,134.3) rotate(135)"><path d="M0 -13 L11 9 L-11 9 Z" fill="rgba(240,178,62,0.85)"/></g>
+          <g transform="translate(425.7,425.7) rotate(225)"><path d="M0 -13 L11 9 L-11 9 Z" fill="rgba(240,178,62,0.85)"/></g>
+          <g transform="translate(134.3,425.7) rotate(315)"><path d="M0 -13 L11 9 L-11 9 Z" fill="rgba(240,178,62,0.85)"/></g>
+          <g transform="translate(134.3,134.3) rotate(45)"><path d="M0 -13 L11 9 L-11 9 Z" fill="rgba(240,178,62,0.85)"/></g>
+        </svg>
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center;">
+          <div style="font-size:60px;" class="gold">∞</div>
+          <div class="klabel" style="font-size:19px; margin-top:6px;">Ciclo continuo</div>
+        </div>
+        <div style="position:absolute; top:-6px; left:50%; transform:translateX(-50%);"><span class="chip" style="font-size:24px; padding:14px 30px; border-color:var(--gold-line); background:var(--gold-soft);"><span class="dot"></span>1 · Probar</span></div>
+        <div style="position:absolute; right:-58px; top:50%; transform:translateY(-50%);"><span class="chip" style="font-size:24px; padding:14px 30px;"><span class="dot"></span>2 · Medir</span></div>
+        <div style="position:absolute; bottom:-6px; left:50%; transform:translateX(-50%);"><span class="chip" style="font-size:24px; padding:14px 30px;"><span class="dot"></span>3 · Optimizar</span></div>
+        <div style="position:absolute; left:-58px; top:50%; transform:translateY(-50%);"><span class="chip" style="font-size:24px; padding:14px 30px; border-color:var(--gold-line);"><span class="dot"></span>4 · Escalar</span></div>
+      </div>
+      <footer class="foot" style="grid-column:1 / -1;"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">08 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 09 · PILOTO ============ -->
+  <div class="scene" id="sc-piloto" data-composition-id="piloto" data-start="55" data-duration="7" data-label="Piloto 300–500" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-piloto" class="clip stage" data-start="55" data-duration="7" data-track-index="0">
+      <div style="display:grid; grid-template-columns: 560px 1fr; gap:80px; align-items:start;">
+        <div>
+          <div id="pl-eyebrow" class="rv eyebrow">Fase 1 · Piloto</div>
+          <div id="pl-num" class="rv num-hero" style="font-size:150px;">300–500</div>
+          <div id="pl-cap" class="rv" style="font-size:30px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin-top:6px;">Contactos</div>
+          <div id="pl-test-label" class="rv klabel" style="margin-top:40px;">Qué probamos</div>
+          <div id="pl-test" class="rv" style="display:flex; flex-direction:column; gap:12px; margin-top:18px;">
+            <span class="chip" style="font-size:23px; padding:12px 24px; align-self:flex-start;"><span class="dot"></span>Diferentes mensajes</span>
+            <span class="chip" style="font-size:23px; padding:12px 24px; align-self:flex-start;"><span class="dot"></span>Diferentes promociones</span>
+            <span class="chip" style="font-size:23px; padding:12px 24px; align-self:flex-start;"><span class="dot"></span>Diferentes mecanismos de entrada</span>
+          </div>
+        </div>
+        <div style="padding-top:24px;">
+          <div id="pl-m-label" class="rv klabel">Qué medimos</div>
+          <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-top:22px;">
+            <div id="pl-m1" class="rv card" style="padding:22px 20px; text-align:center; font-size:23px; font-weight:700;">Contactados</div>
+            <div id="pl-m2" class="rv card" style="padding:22px 20px; text-align:center; font-size:23px; font-weight:700;">Respuestas</div>
+            <div id="pl-m3" class="rv card" style="padding:22px 20px; text-align:center; font-size:23px; font-weight:700;">Clics</div>
+            <div id="pl-m4" class="rv card" style="padding:22px 20px; text-align:center; font-size:23px; font-weight:700;">Registros</div>
+            <div id="pl-m5" class="rv card" style="padding:22px 20px; text-align:center; font-size:23px; font-weight:700; border-color:var(--gold-line); background:var(--gold-soft);">Primeros depósitos</div>
+            <div id="pl-m6" class="rv card" style="padding:22px 20px; text-align:center; font-size:23px; font-weight:700;">Actividad</div>
+            <div id="pl-m7" class="rv card" style="padding:22px 20px; text-align:center; font-size:23px; font-weight:700;">Referidos</div>
+            <div id="pl-m8" class="rv card" style="padding:22px 20px; text-align:center; font-size:23px; font-weight:600; color:var(--dim);">Rendimiento por campaña</div>
+          </div>
+          <div id="pl-note" class="rv card" style="margin-top:40px; padding:26px 32px; display:flex; gap:18px; align-items:center;">
+            <span class="tag">Importante</span>
+            <span style="font-size:25px; color:var(--dim);">Fases de alcance para pruebas y expansión — <b style="color:var(--ink);">no resultados garantizados.</b></span>
+          </div>
+        </div>
+      </div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">09 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 10 · SEGMENTACIÓN Y CAPTACIÓN ============ -->
+  <div class="scene" id="sc-captacion" data-composition-id="captacion" data-start="62" data-duration="8" data-label="Segmentación y captación" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-captacion" class="clip stage" data-start="62" data-duration="8" data-track-index="0">
+      <div id="cp-eyebrow" class="rv eyebrow">Segmentación y captación</div>
+      <h1 id="cp-h" class="rv h1">No un mensaje para todos: <span class="g">tres conceptos a comparar</span></h1>
+      <div id="cp-seg" class="rv" style="display:flex; gap:16px; margin-top:30px; flex-wrap:wrap; align-items:center;">
+        <span class="klabel" style="margin-right:8px;">Segmentos:</span>
+        <span class="chip" style="font-size:22px; padding:11px 22px;"><span class="dot"></span>Jugadores recientes</span>
+        <span class="chip" style="font-size:22px; padding:11px 22px;"><span class="dot"></span>Jugadores inactivos</span>
+        <span class="chip" style="font-size:22px; padding:11px 22px;"><span class="dot"></span>Sensibles a promociones</span>
+        <span class="chip" style="font-size:22px; padding:11px 22px;"><span class="dot"></span>Potencial de referidos</span>
+      </div>
+      <div style="display:flex; gap:24px; margin-top:44px;">
+        <div id="cp-a" class="rv card" style="flex:1; padding:36px 38px; border-top:4px solid var(--gold);">
+          <div style="display:flex; align-items:baseline; gap:16px;">
+            <span style="font-size:56px; font-weight:800;" class="gold">A</span>
+            <span style="font-size:32px; font-weight:800; letter-spacing:0.06em;">PROMOCIÓN</span>
+          </div>
+          <p class="dim" style="font-size:25px; line-height:1.5; margin-top:18px;">Comunicación centrada en un beneficio o promoción disponible.</p>
+        </div>
+        <div id="cp-b" class="rv card" style="flex:1; padding:36px 38px; border-top:4px solid var(--blue);">
+          <div style="display:flex; align-items:baseline; gap:16px;">
+            <span style="font-size:56px; font-weight:800;" class="blue">B</span>
+            <span style="font-size:32px; font-weight:800; letter-spacing:0.06em;">COMUNIDAD</span>
+          </div>
+          <p class="dim" style="font-size:25px; line-height:1.5; margin-top:18px;">Invitación a una comunidad con acceso voluntario a promociones, códigos y actividades.</p>
+        </div>
+        <div id="cp-c" class="rv card" style="flex:1; padding:36px 38px; border-top:4px solid rgba(244,245,247,0.6);">
+          <div style="display:flex; align-items:baseline; gap:16px;">
+            <span style="font-size:56px; font-weight:800;">C</span>
+            <span style="font-size:32px; font-weight:800; letter-spacing:0.06em;">EXPERIENCIA</span>
+          </div>
+          <p class="dim" style="font-size:25px; line-height:1.5; margin-top:18px;">Invitación a descubrir Spinvra mediante una primera dinámica o campaña.</p>
+        </div>
+      </div>
+      <div id="cp-line" class="rv" style="margin-top:44px; text-align:center; font-size:30px; font-weight:600;">
+        Comparamos resultados y <span class="gold">escalamos solo lo que funciona.</span>
+      </div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">10 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 11 · FUNNEL ============ -->
+  <div class="scene" id="sc-funnel" data-composition-id="funnel" data-start="70" data-duration="8" data-label="Funnel de conversión" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-funnel" class="clip stage" data-start="70" data-duration="8" data-track-index="0" style="display:grid; grid-template-columns: 1fr 380px; gap:70px; align-items:center;">
+      <div>
+        <div id="fn-eyebrow" class="rv eyebrow">Funnel de conversión</div>
+        <h1 id="fn-h" class="rv h1" style="margin-bottom:44px;">De audiencia <span class="g">a referido</span></h1>
+        <div style="display:flex; flex-direction:column; gap:10px; align-items:center;">
+          <div id="fn-t1" class="rv" style="width:1160px; height:66px; clip-path:polygon(0 0, 1160px 0, 1093px 100%, 67px 100%); background:linear-gradient(90deg, rgba(240,178,62,0.85), rgba(240,178,62,0.45)); display:flex; align-items:center; justify-content:space-between; padding:0 46px;">
+            <span style="font-size:25px; font-weight:800; letter-spacing:0.1em; color:#0a0b0f;">AUDIENCIA POTENCIAL</span><span style="font-size:25px; font-weight:800; color:#0a0b0f;">10,700</span>
+          </div>
+          <div id="fn-t2" class="rv" style="width:1020px; height:66px; clip-path:polygon(0 0, 1020px 0, 953px 100%, 67px 100%); background:linear-gradient(90deg, rgba(240,178,62,0.62), rgba(240,178,62,0.30)); display:flex; align-items:center; padding:0 46px;">
+            <span style="font-size:25px; font-weight:800; letter-spacing:0.1em; color:#0a0b0f;">CONTACTO</span>
+          </div>
+          <div id="fn-t3" class="rv" style="width:880px; height:66px; clip-path:polygon(0 0, 880px 0, 813px 100%, 67px 100%); background:linear-gradient(90deg, rgba(240,178,62,0.38), rgba(91,141,239,0.28)); display:flex; align-items:center; padding:0 46px;">
+            <span style="font-size:25px; font-weight:800; letter-spacing:0.1em; color:var(--ink);">REGISTRO</span>
+          </div>
+          <div id="fn-t4" class="rv" style="width:740px; height:66px; clip-path:polygon(0 0, 740px 0, 673px 100%, 67px 100%); background:linear-gradient(90deg, rgba(91,141,239,0.42), rgba(91,141,239,0.22)); display:flex; align-items:center; padding:0 46px;">
+            <span style="font-size:25px; font-weight:800; letter-spacing:0.1em; color:var(--ink);">PRIMER DEPÓSITO</span>
+          </div>
+          <div id="fn-t5" class="rv" style="width:600px; height:66px; clip-path:polygon(0 0, 600px 0, 533px 100%, 67px 100%); background:linear-gradient(90deg, rgba(91,141,239,0.30), rgba(91,141,239,0.15)); display:flex; align-items:center; padding:0 46px;">
+            <span style="font-size:25px; font-weight:800; letter-spacing:0.1em; color:var(--ink);">COMUNIDAD</span>
+          </div>
+          <div id="fn-t6" class="rv" style="width:460px; height:66px; clip-path:polygon(0 0, 460px 0, 393px 100%, 67px 100%); background:linear-gradient(90deg, rgba(240,178,62,0.75), rgba(240,178,62,0.4)); display:flex; align-items:center; padding:0 46px;">
+            <span style="font-size:25px; font-weight:800; letter-spacing:0.1em; color:#0a0b0f;">REFERIDO</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:26px;">
+        <div id="fn-side1" class="rv card" style="padding:30px 32px;">
+          <div class="klabel" style="margin-bottom:14px;">Principio</div>
+          <div style="font-size:26px; font-weight:600; line-height:1.4;">Cada etapa se mide.<br>Cada transición se optimiza.</div>
+        </div>
+        <div id="fn-side2" class="rv card" style="padding:30px 32px;">
+          <div class="klabel" style="margin-bottom:14px;">Referido</div>
+          <div style="font-size:26px; font-weight:600; line-height:1.4;">El funnel no termina en el depósito: el usuario convertido genera nuevos usuarios.</div>
+        </div>
+        <div id="fn-side3" class="rv dim" style="font-size:21px;">Diagrama conceptual — las proporciones son ilustrativas.</div>
+      </div>
+      <footer class="foot" style="grid-column:1 / -1;"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">11 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 12 · COMUNIDAD ============ -->
+  <div class="scene" id="sc-comunidad" data-composition-id="comunidad" data-start="78" data-duration="7" data-label="Spinvra Community" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-comunidad" class="clip stage" data-start="78" data-duration="7" data-track-index="0">
+      <div id="cm-eyebrow" class="rv eyebrow">Spinvra Community</div>
+      <h1 id="cm-h" class="rv h1">La adquisición puntual se convierte<br><span class="g">en relación continua</span></h1>
+      <div style="display:flex; gap:22px; margin-top:44px; align-items:center;">
+        <span id="cm-w1" class="rv chip" style="font-size:28px; padding:20px 40px; border-color:var(--gold-line); background:var(--gold-soft);"><span class="dot"></span>WhatsApp</span>
+        <span id="cm-w2" class="rv chip" style="font-size:28px; padding:20px 40px; border-color:var(--gold-line); background:var(--gold-soft);"><span class="dot"></span>Telegram</span>
+        <span id="cm-w3" class="rv dim" style="font-size:24px; margin-left:10px;">Canales iniciales para el mercado dominicano — participación voluntaria.</span>
+      </div>
+      <div id="cm-grid" class="rv" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:16px; margin-top:48px;">
+        <div class="card" style="padding:26px 20px; text-align:center; font-size:24px; font-weight:600;">Promociones</div>
+        <div class="card" style="padding:26px 20px; text-align:center; font-size:24px; font-weight:600;">Códigos</div>
+        <div class="card" style="padding:26px 20px; text-align:center; font-size:24px; font-weight:600;">Dinámicas</div>
+        <div class="card" style="padding:26px 20px; text-align:center; font-size:24px; font-weight:600;">Campañas</div>
+        <div class="card" style="padding:26px 20px; text-align:center; font-size:24px; font-weight:600;">Referidos</div>
+        <div class="card" style="padding:26px 20px; text-align:center; font-size:24px; font-weight:600;">Concursos</div>
+        <div class="card" style="padding:26px 20px; text-align:center; font-size:24px; font-weight:600;">Anuncios</div>
+        <div class="card" style="padding:26px 20px; text-align:center; font-size:24px; font-weight:600;">Ganadores</div>
+        <div class="card" style="padding:26px 20px; text-align:center; font-size:24px; font-weight:600;">Actividades</div>
+        <div class="card" style="padding:26px 20px; text-align:center; font-size:24px; font-weight:600;">Contenido</div>
+      </div>
+      <div id="cm-line" class="rv" style="margin-top:48px; display:flex; align-items:center; gap:20px;">
+        <div style="width:56px; height:2px; background:var(--gold);"></div>
+        <div style="font-size:30px; font-weight:600;">No es un grupo de enlaces: <span class="gold">es un canal de valor continuo.</span></div>
+      </div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">12 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 13 · PROMOCIONES ============ -->
+  <div class="scene" id="sc-promociones" data-composition-id="promociones" data-start="85" data-duration="8" data-label="Promociones y códigos" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-promociones" class="clip stage" data-start="85" data-duration="8" data-track-index="0">
+      <div style="display:grid; grid-template-columns: 640px 1fr; gap:80px; align-items:start;">
+        <div>
+          <div id="pr-eyebrow" class="rv eyebrow">Promociones y códigos</div>
+          <div id="pr-num" class="rv num-hero" style="font-size:120px;">US$1–77</div>
+          <div id="pr-cap" class="rv" style="font-size:27px; color:var(--dim); margin-top:16px; line-height:1.5;">Códigos promocionales diarios de Spinvra con premios aleatorios — convertidos en <b style="color:var(--ink);">anticipación, participación y recurrencia.</b></div>
+          <div id="pr-levels-label" class="rv klabel" style="margin-top:48px;">Niveles de campaña</div>
+          <div id="pr-levels" class="rv" style="display:flex; flex-direction:column; gap:12px; margin-top:18px;">
+            <div class="card" style="padding:18px 26px; display:flex; gap:18px; align-items:center;"><span class="tag" style="min-width:64px; text-align:center;">N1</span><span style="font-size:24px; font-weight:600;">Códigos y actividades recurrentes</span></div>
+            <div class="card" style="padding:18px 26px; display:flex; gap:18px; align-items:center;"><span class="tag" style="min-width:64px; text-align:center;">N2</span><span style="font-size:24px; font-weight:600;">Microcampañas y pequeños incentivos</span></div>
+            <div class="card" style="padding:18px 26px; display:flex; gap:18px; align-items:center;"><span class="tag" style="min-width:64px; text-align:center;">N3</span><span style="font-size:24px; font-weight:600;">Campañas especiales</span></div>
+            <div class="card" style="padding:18px 26px; display:flex; gap:18px; align-items:center; border-color:var(--gold-line); background:var(--gold-soft);"><span class="tag" style="min-width:64px; text-align:center;">N4</span><span style="font-size:24px; font-weight:600;"><b class="gold">SPINVRA BIG WEEK</b> — acelerador futuro, con condiciones oficiales</span></div>
+          </div>
+        </div>
+        <div style="padding-top:20px;">
+          <div id="pr-dyn-label" class="rv klabel">Dinámicas para no solo publicar códigos</div>
+          <div id="pr-dyn" class="rv" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; margin-top:22px;">
+            <div class="card" style="padding:28px 30px;"><div style="font-size:26px; font-weight:700;">Código Sorpresa</div><div class="dim" style="font-size:22px; margin-top:8px;">aparece sin avisar</div></div>
+            <div class="card" style="padding:28px 30px;"><div style="font-size:26px; font-weight:700;">Hora fija</div><div class="dim" style="font-size:22px; margin-top:8px;">liberado a una hora determinada</div></div>
+            <div class="card" style="padding:28px 30px;"><div style="font-size:26px; font-weight:700;">Varios al día</div><div class="dim" style="font-size:22px; margin-top:8px;">múltiples códigos en un mismo día</div></div>
+            <div class="card" style="padding:28px 30px;"><div style="font-size:26px; font-weight:700;">Actividad previa</div><div class="dim" style="font-size:22px; margin-top:8px;">una acción sencilla libera el código</div></div>
+            <div class="card" style="padding:28px 30px;"><div style="font-size:26px; font-weight:700;">Semana de promociones</div><div class="dim" style="font-size:22px; margin-top:8px;">una temática por día</div></div>
+            <div class="card" style="padding:28px 30px;"><div style="font-size:26px; font-weight:700;">Hora Spinvra</div><div class="dim" style="font-size:22px; margin-top:8px;">momento diario de la comunidad</div></div>
+          </div>
+          <div id="pr-note" class="rv card" style="margin-top:28px; padding:24px 30px; border-color:var(--gold-line);">
+            <span style="font-size:24px; color:var(--dim);">El premio grande no se usa de inmediato: <b style="color:var(--ink);">primero audiencia y comunidad; después, el acelerador.</b></span>
+          </div>
+        </div>
+      </div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">13 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 14 · REMARKETING ============ -->
+  <div class="scene" id="sc-remarketing" data-composition-id="remarketing" data-start="93" data-duration="8" data-label="Remarketing" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-remarketing" class="clip stage" data-start="93" data-duration="8" data-track-index="0">
+      <div id="rm-eyebrow" class="rv eyebrow">Remarketing permitido</div>
+      <h1 id="rm-h" class="rv h1">Cuatro estados, <span class="g">cuatro estrategias</span></h1>
+      <div style="display:flex; flex-direction:column; gap:18px; margin-top:46px; max-width:1520px;">
+        <div id="rm-1" class="rv card" style="display:grid; grid-template-columns:110px 460px 1fr; align-items:center; padding:26px 36px; gap:30px;">
+          <span style="font-size:52px; font-weight:800;" class="gold">01</span>
+          <span style="font-size:28px; font-weight:700;">Contactado sin respuesta</span>
+          <span class="dim" style="font-size:25px;">Re-contacto con un ángulo diferente y nueva oferta de entrada</span>
+        </div>
+        <div id="rm-2" class="rv card" style="display:grid; grid-template-columns:110px 460px 1fr; align-items:center; padding:26px 36px; gap:30px;">
+          <span style="font-size:52px; font-weight:800;" class="gold">02</span>
+          <span style="font-size:28px; font-weight:700;">Interesado sin registro</span>
+          <span class="dim" style="font-size:25px;">Recordatorio oportuno + incentivo claro para completar el registro</span>
+        </div>
+        <div id="rm-3" class="rv card" style="display:grid; grid-template-columns:110px 460px 1fr; align-items:center; padding:26px 36px; gap:30px;">
+          <span style="font-size:52px; font-weight:800;" class="gold">03</span>
+          <span style="font-size:28px; font-weight:700;">Registrado sin primer depósito</span>
+          <span class="dim" style="font-size:25px;">Activación del primer depósito con promoción de bienvenida</span>
+        </div>
+        <div id="rm-4" class="rv card" style="display:grid; grid-template-columns:110px 460px 1fr; align-items:center; padding:26px 36px; gap:30px; border-color:var(--gold-line); background:var(--gold-soft);">
+          <span style="font-size:52px; font-weight:800;" class="gold">04</span>
+          <span style="font-size:28px; font-weight:700;">Usuario convertido</span>
+          <span class="dim" style="font-size:25px;">Comunidad, recurrencia con códigos y activación de referidos</span>
+        </div>
+      </div>
+      <div id="rm-note" class="rv" style="margin-top:38px; display:flex; align-items:center; gap:18px;">
+        <span class="tag">Frecuencia controlada</span>
+        <span class="dim" style="font-size:25px;">Secuencias con límite de contactos — sin saturar al usuario.</span>
+      </div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">14 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 15 · REFERIDOS ============ -->
+  <div class="scene" id="sc-referidos" data-composition-id="referidos" data-start="101" data-duration="8" data-label="Sistema de referidos" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-referidos" class="clip stage" data-start="101" data-duration="8" data-track-index="0">
+      <div id="rf-eyebrow" class="rv eyebrow">Sistema de referidos · 3 niveles</div>
+      <h1 id="rf-h" class="rv h1">El segundo motor <span class="g">de adquisición</span></h1>
+      <div id="rf-chain" class="rv" style="display:flex; align-items:stretch; gap:0; margin-top:56px;">
+        <div class="card" style="width:300px; padding:38px 30px; text-align:center; display:flex; flex-direction:column; justify-content:center;">
+          <div class="klabel" style="margin-bottom:10px;">Operación</div>
+          <div style="font-size:32px; font-weight:800;">SPINVRA</div>
+        </div>
+        <div class="arrow-r" style="width:80px;">→</div>
+        <div class="card" style="flex:1; padding:38px 30px; text-align:center; border-top:4px solid var(--gold);">
+          <div class="klabel" style="margin-bottom:10px;">Nivel 1</div>
+          <div style="font-size:30px; font-weight:800;">USUARIO A</div>
+          <div style="font-size:44px; font-weight:800; margin-top:10px;" class="gold">+ US$3</div>
+        </div>
+        <div class="arrow-r" style="width:80px;">→</div>
+        <div class="card" style="flex:1; padding:38px 30px; text-align:center; border-top:4px solid rgba(240,178,62,0.55);">
+          <div class="klabel" style="margin-bottom:10px;">Nivel 2</div>
+          <div style="font-size:30px; font-weight:800;">USUARIO B</div>
+          <div style="font-size:44px; font-weight:800; margin-top:10px;" class="gold">+ US$1</div>
+        </div>
+        <div class="arrow-r" style="width:80px;">→</div>
+        <div class="card" style="flex:1; padding:38px 30px; text-align:center; border-top:4px solid rgba(240,178,62,0.35);">
+          <div class="klabel" style="margin-bottom:10px;">Nivel 3</div>
+          <div style="font-size:30px; font-weight:800;">USUARIO C</div>
+          <div style="font-size:44px; font-weight:800; margin-top:10px;" class="gold">+ US$0.50</div>
+        </div>
+      </div>
+      <div id="rf-ex" class="rv dim" style="font-size:22px; margin-top:20px;">Ejemplo ilustrativo sobre un primer depósito de US$10, según el programa de referidos de Spinvra.</div>
+      <div id="rf-msg" class="rv card" style="margin-top:44px; padding:40px 48px; border-color:var(--gold-line); background:var(--gold-soft); display:flex; align-items:center; gap:28px;">
+        <div style="font-size:64px; font-weight:800;" class="gold">→</div>
+        <div style="font-size:34px; font-weight:700; line-height:1.35;">“Los aproximadamente 10,700 contactos representan el punto de partida,<br>no necesariamente el límite del crecimiento.”</div>
+      </div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">15 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 16 · EQUIPO ============ -->
+  <div class="scene" id="sc-equipo" data-composition-id="equipo" data-start="109" data-duration="7" data-label="Equipo y capacidad" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-equipo" class="clip stage" data-start="109" data-duration="7" data-track-index="0">
+      <div id="eq-eyebrow" class="rv eyebrow">Equipo y capacidad de ejecución</div>
+      <h1 id="eq-h" class="rv h1">Capacidad operativa detrás de cada etapa</h1>
+      <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:18px; margin-top:52px;">
+        <div id="eq-1" class="rv card" style="padding:34px 28px; border-top:4px solid var(--gold);">
+          <div style="font-size:24px; font-weight:800; letter-spacing:0.08em;">DIRECCIÓN Y<br>ESTRATEGIA</div>
+          <div class="dim" style="font-size:22px; line-height:1.55; margin-top:18px;">Planificación · campañas · coordinación · seguimiento · análisis</div>
+        </div>
+        <div id="eq-2" class="rv card" style="padding:34px 28px; border-top:4px solid rgba(240,178,62,0.55);">
+          <div style="font-size:24px; font-weight:800; letter-spacing:0.08em;">DISEÑO<br>GRÁFICO</div>
+          <div class="dim" style="font-size:22px; line-height:1.55; margin-top:18px;">Piezas promocionales · material de comunidad · contenido digital</div>
+        </div>
+        <div id="eq-3" class="rv card" style="padding:34px 28px; border-top:4px solid rgba(240,178,62,0.35);">
+          <div style="font-size:24px; font-weight:800; letter-spacing:0.08em;">CONTENIDO Y<br>AUDIOVISUAL</div>
+          <div class="dim" style="font-size:22px; line-height:1.55; margin-top:18px;">Edición profesional · video vertical · Reels · cobertura de actividades</div>
+        </div>
+        <div id="eq-4" class="rv card" style="padding:34px 28px; border-top:4px solid var(--blue);">
+          <div style="font-size:24px; font-weight:800; letter-spacing:0.08em;">COMMUNITY</div>
+          <div class="dim" style="font-size:22px; line-height:1.55; margin-top:18px;">WhatsApp · Telegram · programación · seguimiento de campañas</div>
+        </div>
+        <div id="eq-5" class="rv card" style="padding:34px 28px; border-top:4px solid rgba(91,141,239,0.5);">
+          <div style="font-size:24px; font-weight:800; letter-spacing:0.08em;">DATA Y<br>PERFORMANCE</div>
+          <div class="dim" style="font-size:22px; line-height:1.55; margin-top:18px;">Tracking · registros · depósitos · conversión · referidos · canales</div>
+        </div>
+      </div>
+      <div id="eq-line" class="rv" style="margin-top:56px; display:flex; align-items:center; gap:20px;">
+        <div style="width:56px; height:2px; background:var(--gold);"></div>
+        <div style="font-size:30px; font-weight:600;">Operación local bajo coordinación directa — <span class="gold">lista para ejecutar desde la semana 1.</span></div>
+      </div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">16 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 17 · MÉTRICAS ============ -->
+  <div class="scene" id="sc-metricas" data-composition-id="metricas" data-start="116" data-duration="8" data-label="Métricas y dashboard" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-metricas" class="clip stage" data-start="116" data-duration="8" data-track-index="0">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+        <div>
+          <div id="mx-eyebrow" class="rv eyebrow">Medición</div>
+          <h1 id="mx-h" class="rv h1">Todo se mide. <span class="g">Solo se escala lo que funciona.</span></h1>
+        </div>
+        <div id="mx-badge" class="rv"><span class="tag">Vista ilustrativa</span></div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(6, 1fr); gap:16px; margin-top:46px;">
+        <div id="mx-1" class="rv card" style="padding:24px 22px;"><div class="klabel" style="font-size:17px;">Contactos alcanzados</div><div style="font-size:42px; font-weight:800; margin-top:10px; color:var(--faint);">—</div></div>
+        <div id="mx-2" class="rv card" style="padding:24px 22px;"><div class="klabel" style="font-size:17px;">Respuestas</div><div style="font-size:42px; font-weight:800; margin-top:10px; color:var(--faint);">—</div></div>
+        <div id="mx-3" class="rv card" style="padding:24px 22px;"><div class="klabel" style="font-size:17px;">Clics</div><div style="font-size:42px; font-weight:800; margin-top:10px; color:var(--faint);">—</div></div>
+        <div id="mx-4" class="rv card" style="padding:24px 22px;"><div class="klabel" style="font-size:17px;">Registros</div><div style="font-size:42px; font-weight:800; margin-top:10px; color:var(--faint);">—</div></div>
+        <div id="mx-5" class="rv card" style="padding:24px 22px; border-color:var(--gold-line); background:var(--gold-soft);"><div class="klabel gold" style="font-size:17px;">Primeros depósitos</div><div style="font-size:42px; font-weight:800; margin-top:10px; color:var(--faint);">—</div></div>
+        <div id="mx-6" class="rv card" style="padding:24px 22px;"><div class="klabel" style="font-size:17px;">Registro → depósito</div><div style="font-size:42px; font-weight:800; margin-top:10px; color:var(--faint);">—</div></div>
+        <div id="mx-7" class="rv card" style="padding:24px 22px;"><div class="klabel" style="font-size:17px;">Miembros comunidad</div><div style="font-size:42px; font-weight:800; margin-top:10px; color:var(--faint);">—</div></div>
+        <div id="mx-8" class="rv card" style="padding:24px 22px;"><div class="klabel" style="font-size:17px;">Actividad</div><div style="font-size:42px; font-weight:800; margin-top:10px; color:var(--faint);">—</div></div>
+        <div id="mx-9" class="rv card" style="padding:24px 22px;"><div class="klabel" style="font-size:17px;">Referidos N1</div><div style="font-size:42px; font-weight:800; margin-top:10px; color:var(--faint);">—</div></div>
+        <div id="mx-10" class="rv card" style="padding:24px 22px;"><div class="klabel" style="font-size:17px;">Referidos N2</div><div style="font-size:42px; font-weight:800; margin-top:10px; color:var(--faint);">—</div></div>
+        <div id="mx-11" class="rv card" style="padding:24px 22px;"><div class="klabel" style="font-size:17px;">Referidos N3</div><div style="font-size:42px; font-weight:800; margin-top:10px; color:var(--faint);">—</div></div>
+        <div id="mx-12" class="rv card" style="padding:24px 22px;"><div class="klabel" style="font-size:17px;">Coste de adquisición</div><div style="font-size:42px; font-weight:800; margin-top:10px; color:var(--faint);">—</div></div>
+      </div>
+      <div id="mx-note" class="rv" style="margin-top:36px; display:flex; align-items:center; gap:18px;">
+        <span class="tag">Sin resultados inventados</span>
+        <span class="dim" style="font-size:25px;">El dashboard se completa con datos reales desde el primer piloto; el rendimiento por campaña define dónde invertir.</span>
+      </div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">17 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 18 · PLAN 30 DÍAS ============ -->
+  <div class="scene" id="sc-plan" data-composition-id="plan" data-start="124" data-duration="8" data-label="Plan de 30 días" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-plan" class="clip stage" data-start="124" data-duration="8" data-track-index="0">
+      <div id="pn-eyebrow" class="rv eyebrow">Plan de 30 días</div>
+      <h1 id="pn-h" class="rv h1">De la preparación <span class="g">a la primera escala</span></h1>
+      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:20px; margin-top:50px;">
+        <div id="pn-1" class="rv card" style="padding:32px 30px;">
+          <div style="display:flex; align-items:baseline; gap:14px;"><span class="gold" style="font-size:44px; font-weight:800;">S1</span><span style="font-size:26px; font-weight:800;">Preparación</span></div>
+          <div class="dim" style="font-size:22px; line-height:1.6; margin-top:18px;">Tracking y comprensión del sistema · organización de la audiencia · segmentación · comunidad · diseño · mensajes · promociones</div>
+        </div>
+        <div id="pn-2" class="rv card" style="padding:32px 30px;">
+          <div style="display:flex; align-items:baseline; gap:14px;"><span class="gold" style="font-size:44px; font-weight:800;">S2</span><span style="font-size:26px; font-weight:800;">Piloto</span></div>
+          <div class="dim" style="font-size:22px; line-height:1.6; margin-top:18px;">300–500 contactos · diferentes mensajes · primeras promociones · primeros registros y depósitos · medición</div>
+        </div>
+        <div id="pn-3" class="rv card" style="padding:32px 30px;">
+          <div style="display:flex; align-items:baseline; gap:14px;"><span class="gold" style="font-size:44px; font-weight:800;">S3</span><span style="font-size:26px; font-weight:800;">Optimización</span></div>
+          <div class="dim" style="font-size:22px; line-height:1.6; margin-top:18px;">Comparar campañas A/B/C · mejor comunicación y promoción · remarketing · referidos · segunda prueba</div>
+        </div>
+        <div id="pn-4" class="rv card" style="padding:32px 30px; border-color:var(--gold-line); background:var(--gold-soft);">
+          <div style="display:flex; align-items:baseline; gap:14px;"><span class="gold" style="font-size:44px; font-weight:800;">S4</span><span style="font-size:26px; font-weight:800;">Primera escala</span></div>
+          <div class="dim" style="font-size:22px; line-height:1.6; margin-top:18px;">Ampliar con la estrategia de mejor rendimiento · analizar conversión · optimizar comunidad · preparar el siguiente ciclo</div>
+        </div>
+      </div>
+      <div id="pn-strip" class="rv card" style="margin-top:36px; padding:28px 36px; display:flex; align-items:center; gap:28px;">
+        <span class="tag" style="white-space:nowrap;">30–90 días</span>
+        <span class="dim" style="font-size:24px;">Ampliar segmentos · fortalecer comunidad · más referidos · nuevas campañas · contenido local · mejor remarketing · <b style="color:var(--ink);">invertir más solo donde hay resultados.</b></span>
+      </div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">18 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 19 · ESCALAMIENTO ============ -->
+  <div class="scene" id="sc-escalamiento" data-composition-id="escalamiento" data-start="132" data-duration="8" data-label="Modelo de escalamiento" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-escalamiento" class="clip stage" data-start="132" data-duration="8" data-track-index="0">
+      <div id="es-eyebrow" class="rv eyebrow">Modelo de escalamiento</div>
+      <h1 id="es-h" class="rv h1">Cada etapa se abre <span class="g">cuando la anterior demuestra conversión</span></h1>
+      <div style="display:flex; align-items:stretch; margin-top:64px;">
+        <div id="es-1" class="rv card" style="flex:1; padding:38px 30px; text-align:center; border-top:4px solid var(--gold);">
+          <div class="klabel">Etapa 1</div>
+          <div style="font-size:52px; font-weight:800; margin-top:12px;" class="gold">300–500</div>
+          <div class="dim" style="font-size:22px; margin-top:10px;">piloto</div>
+        </div>
+        <div class="arrow-r" style="width:64px;">→</div>
+        <div id="es-2" class="rv card" style="flex:1; padding:38px 30px; text-align:center;">
+          <div class="klabel">Etapa 2</div>
+          <div style="font-size:52px; font-weight:800; margin-top:12px;">1,000–1,500</div>
+          <div class="dim" style="font-size:22px; margin-top:10px;">mejor combinación validada</div>
+        </div>
+        <div class="arrow-r" style="width:64px;">→</div>
+        <div id="es-3" class="rv card" style="flex:1; padding:38px 30px; text-align:center;">
+          <div class="klabel">Etapa 3</div>
+          <div style="font-size:52px; font-weight:800; margin-top:12px;">2,500–3,500</div>
+          <div class="dim" style="font-size:22px; margin-top:10px;">expansión controlada</div>
+        </div>
+        <div class="arrow-r" style="width:64px;">→</div>
+        <div id="es-4" class="rv card" style="flex:1.15; padding:38px 30px; text-align:center; border-color:var(--gold-line); background:var(--gold-soft);">
+          <div class="klabel">Etapa 4</div>
+          <div style="font-size:40px; font-weight:800; margin-top:20px;">Nuevos segmentos</div>
+          <div class="dim" style="font-size:22px; margin-top:12px;">audiencia restante + nuevas fuentes</div>
+        </div>
+      </div>
+      <div id="es-note" class="rv" style="margin-top:48px; display:flex; align-items:center; gap:18px;">
+        <span class="tag">Decisión con datos</span>
+        <span class="dim" style="font-size:25px;">Las cifras son fases de alcance para pruebas y expansión — el ritmo real lo marca la conversión.</span>
+      </div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">19 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 20 · ACTIVACIONES ============ -->
+  <div class="scene" id="sc-activaciones" data-composition-id="activaciones" data-start="140" data-duration="7" data-label="Activaciones y promociones cruzadas" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-activaciones" class="clip stage" data-start="140" data-duration="7" data-track-index="0">
+      <div id="ac-eyebrow" class="rv eyebrow">Segunda etapa · Expansión futura</div>
+      <h1 id="ac-h" class="rv h1">Activaciones y <span class="g">promociones cruzadas</span></h1>
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; margin-top:46px;">
+        <div id="ac-1" class="rv card" style="padding:34px 32px;">
+          <div class="klabel" style="margin-bottom:14px;">El negocio</div>
+          <div style="font-size:27px; font-weight:700; line-height:1.4;">Aporta ubicación y audiencia</div>
+          <div class="dim" style="font-size:22px; margin-top:12px;">restaurantes · lounges · discotecas · eventos · entretenimiento adulto autorizado</div>
+        </div>
+        <div id="ac-2" class="rv card" style="padding:34px 32px; border-color:var(--gold-line); background:var(--gold-soft);">
+          <div class="klabel gold" style="margin-bottom:14px;">Spinvra</div>
+          <div style="font-size:27px; font-weight:700; line-height:1.4;">Aporta plataforma, promoción y beneficios</div>
+          <div class="dim" style="font-size:22px; margin-top:12px;">códigos · premios · experiencia de registro</div>
+        </div>
+        <div id="ac-3" class="rv card" style="padding:34px 32px;">
+          <div class="klabel" style="margin-bottom:14px;">Operación local</div>
+          <div style="font-size:27px; font-weight:700; line-height:1.4;">Aporta concepto, diseño, contenido y ejecución</div>
+          <div class="dim" style="font-size:22px; margin-top:12px;">estrategia · personal promocional · stands · QR</div>
+        </div>
+      </div>
+      <div id="ac-chain" class="rv" style="display:flex; align-items:center; gap:14px; margin-top:52px; flex-wrap:nowrap;">
+        <span class="chip" style="font-size:23px; padding:14px 26px;"><span class="dot"></span>Personas alcanzadas</span>
+        <span class="arrow-r" style="font-size:30px;">→</span>
+        <span class="chip" style="font-size:23px; padding:14px 26px;"><span class="dot"></span>Interacciones</span>
+        <span class="arrow-r" style="font-size:30px;">→</span>
+        <span class="chip" style="font-size:23px; padding:14px 26px;"><span class="dot"></span>Escaneos QR</span>
+        <span class="arrow-r" style="font-size:30px;">→</span>
+        <span class="chip" style="font-size:23px; padding:14px 26px;"><span class="dot"></span>Registros</span>
+        <span class="arrow-r" style="font-size:30px;">→</span>
+        <span class="chip" style="font-size:23px; padding:14px 26px; border-color:var(--gold-line); background:var(--gold-soft);"><span class="dot"></span>Primeros depósitos</span>
+      </div>
+      <div id="ac-line" class="rv dim" style="margin-top:34px; font-size:25px;">Cada activación se mide con su propio QR, código o enlace cuando sea técnicamente posible.</div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">20 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 21 · PUNTA CANA ============ -->
+  <div class="scene" id="sc-puntacana" data-composition-id="puntacana" data-start="147" data-duration="7" data-label="Punta Cana" data-width="1920" data-height="1080">
+    <div class="bg"></div>
+    <section id="st-puntacana" class="clip stage" data-start="147" data-duration="7" data-track-index="0">
+      <div id="pc-eyebrow" class="rv eyebrow">Ventaja operativa adicional</div>
+      <h1 id="pc-h" class="rv h1">Punta Cana: una ventaja adicional,<br><span class="g">no el centro de la estrategia</span></h1>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:26px; margin-top:50px;">
+        <div id="pc-1" class="rv card" style="padding:38px 42px;">
+          <div class="klabel" style="margin-bottom:22px;">Público que concentra</div>
+          <div style="display:flex; flex-wrap:wrap; gap:12px;">
+            <span class="chip" style="font-size:22px; padding:11px 22px;"><span class="dot"></span>Dominicanos</span>
+            <span class="chip" style="font-size:22px; padding:11px 22px;"><span class="dot"></span>Residentes extranjeros</span>
+            <span class="chip" style="font-size:22px; padding:11px 22px;"><span class="dot"></span>Latinos</span>
+            <span class="chip" style="font-size:22px; padding:11px 22px;"><span class="dot"></span>Estadounidenses</span>
+            <span class="chip" style="font-size:22px; padding:11px 22px;"><span class="dot"></span>Turistas internacionales</span>
+          </div>
+        </div>
+        <div id="pc-2" class="rv card" style="padding:38px 42px;">
+          <div class="klabel" style="margin-bottom:22px;">Alianzas a evaluar</div>
+          <div class="dim" style="font-size:25px; line-height:1.6;">Experiencia previa en promociones cruzadas con establecimientos. Alianzas solo con lugares apropiados y autorizados, siempre medibles.</div>
+        </div>
+      </div>
+      <div id="pc-line" class="rv" style="margin-top:48px; display:flex; align-items:center; gap:20px;">
+        <div style="width:56px; height:2px; background:var(--gold);"></div>
+        <div style="font-size:30px; font-weight:600;">Primero validamos el modelo digital. <span class="gold">Después exploramos la capa física.</span></div>
+      </div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">21 / 22</span></footer>
+    </section>
+  </div>
+
+  <!-- ============ 22 · CIERRE ============ -->
+  <div class="scene" id="sc-cierre" data-composition-id="cierre" data-start="154" data-duration="8" data-label="Cierre" data-width="1920" data-height="1080">
+    <div class="bg glow"></div>
+    <section id="st-cierre" class="clip stage" data-start="154" data-duration="8" data-track-index="0" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+      <div id="cl-eyebrow" class="rv eyebrow">Spinvra RD</div>
+      <div id="cl-h" class="rv" style="font-size:96px; font-weight:800; letter-spacing:-0.025em; line-height:1.1;">10,700 es el punto de partida.</div>
+      <div id="cl-sub" class="rv sub" style="max-width:1240px; margin-top:34px; font-size:32px;">
+        El objetivo es construir un sistema de crecimiento que pueda superar esa audiencia inicial: probado, medido, optimizado y escalado.
+      </div>
+      <div id="cl-words" class="rv" style="display:flex; gap:36px; margin-top:70px; align-items:baseline;">
+        <span style="font-size:54px; font-weight:800; letter-spacing:0.04em;" class="gold">PROBAR.</span>
+        <span style="font-size:54px; font-weight:800; letter-spacing:0.04em;" class="gold">MEDIR.</span>
+        <span style="font-size:54px; font-weight:800; letter-spacing:0.04em;" class="gold">OPTIMIZAR.</span>
+        <span style="font-size:54px; font-weight:800; letter-spacing:0.04em;" class="gold">ESCALAR.</span>
+      </div>
+      <div id="cl-foot" class="rv" style="margin-top:64px; font-size:26px; color:var(--dim);">
+        Spinvra aporta la plataforma, la tecnología y las promociones. Nosotros aportamos el mercado, la audiencia inicial y la ejecución local.
+      </div>
+      <footer class="foot"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">22 / 22</span></footer>
+    </section>
+  </div>
+
+  <script>
+    window.__timelines = window.__timelines || {};
+    const EASE = "power2.out";
+    // rv(timeline, selector, absoluteTime, opts) — entrance that COMPLETES at `at`.
+    function rv(t, sel, at, dur) {
+      t.fromTo(sel, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: dur || 0.6, ease: EASE, immediateRender: false }, at - (dur || 0.6));
+    }
+    // Entrance that starts AT `at` (used only for base entrances early in a scene).
+    function en(t, sel, at, dur) {
+      t.fromTo(sel, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: dur || 0.7, ease: EASE, immediateRender: false }, at);
+    }
+
+    function build(id, fn) {
+      const t = gsap.timeline({ paused: true });
+      fn(t);
+      window.__timelines[id] = t;
+      t.seek(0);
+    }
+
+    // 01 cover (0–7)
+    build("cover", (t) => {
+      en(t, "#cv-eyebrow", 0.2);
+      en(t, "#cv-title", 0.35, 0.9);
+      en(t, "#cv-country", 0.55);
+      en(t, "#cv-sub", 0.75);
+      en(t, "#cv-chips", 0.95);
+    });
+
+    // 02 resumen (7–13) — fragment at 10.0
+    build("resumen", (t) => {
+      en(t, "#rs-eyebrow", 7.2); en(t, "#rs-h", 7.35); en(t, "#rs-sub", 7.55);
+      en(t, "#rs-c1", 7.8, 0.5); en(t, "#rs-c2", 7.95, 0.5); en(t, "#rs-c3", 8.1, 0.5);
+      rv(t, "#rs-motors-label", 10.0, 0.5);
+      rv(t, "#rs-motors", 10.0, 0.5);
+    });
+
+    // 03 experiencia (13–20)
+    build("experiencia", (t) => {
+      en(t, "#ex-eyebrow", 13.2); en(t, "#ex-h", 13.35); en(t, "#ex-sub", 13.6);
+      en(t, "#ex-b1", 13.9, 0.55); en(t, "#ex-b2", 14.05, 0.55); en(t, "#ex-b3", 14.2, 0.55);
+      en(t, "#ex-line", 14.5); en(t, "#ex-note", 14.7);
+    });
+
+    // 04 activo (20–27)
+    build("activo", (t) => {
+      en(t, "#da-eyebrow", 20.2); en(t, "#da-h", 20.35); en(t, "#da-q", 20.6); en(t, "#da-note", 20.8);
+      en(t, "#da-f1", 20.9, 0.45); en(t, "#da-f2", 21.1, 0.45); en(t, "#da-f3", 21.3, 0.45);
+      en(t, "#da-f4", 21.55, 0.6); en(t, "#da-f5", 21.85, 0.5);
+    });
+
+    // 05 numero (27–35)
+    build("numero", (t) => {
+      en(t, "#nm-eyebrow", 27.2);
+      t.fromTo("#nm-num", { opacity: 0, scale: 0.94, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: EASE, immediateRender: false }, 27.4);
+      en(t, "#nm-cap", 28.0, 0.7); en(t, "#nm-sub", 28.3); en(t, "#nm-note", 28.7);
+    });
+
+    // 06 oportunidad (35–41)
+    build("oportunidad", (t) => {
+      en(t, "#op-eyebrow", 35.2); en(t, "#op-h", 35.35);
+      en(t, "#op-col1", 35.7, 0.55); en(t, "#op-col2", 35.9, 0.55);
+      en(t, "#op-line", 36.4);
+    });
+
+    // 07 objetivo (41–47) — fragment at 44.5
+    build("objetivo", (t) => {
+      en(t, "#ob-eyebrow", 41.2); en(t, "#ob-q", 41.4, 0.9);
+      rv(t, "#ob-chips", 44.5, 0.6);
+    });
+
+    // 08 metodologia (47–55)
+    build("metodologia", (t) => {
+      en(t, "#mt-eyebrow", 47.2); en(t, "#mt-h", 47.35); en(t, "#mt-sub", 47.65); en(t, "#mt-chips", 47.9);
+      t.fromTo("#mt-ring", { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.9, ease: EASE, immediateRender: false }, 48.0);
+    });
+
+    // 09 piloto (55–62) — fragments 58.0, 59.5
+    build("piloto", (t) => {
+      en(t, "#pl-eyebrow", 55.2); en(t, "#pl-num", 55.35, 0.9); en(t, "#pl-cap", 55.9);
+      en(t, "#pl-test-label", 56.1); en(t, "#pl-test", 56.25);
+      en(t, "#pl-m-label", 56.4); en(t, "#pl-m1", 56.55, 0.4); en(t, "#pl-m2", 56.65, 0.4);
+      rv(t, "#pl-m3", 58.0, 0.4); rv(t, "#pl-m4", 58.0, 0.4);
+      rv(t, "#pl-m5", 59.5, 0.4); rv(t, "#pl-m6", 59.5, 0.4); rv(t, "#pl-m7", 59.5, 0.4); rv(t, "#pl-m8", 59.5, 0.4);
+      rv(t, "#pl-note", 59.5, 0.45);
+    });
+
+    // 10 captacion (62–70) — fragments 64.5, 66.0, 67.5
+    build("captacion", (t) => {
+      en(t, "#cp-eyebrow", 62.2); en(t, "#cp-h", 62.35); en(t, "#cp-seg", 62.7);
+      rv(t, "#cp-a", 64.5, 0.5);
+      rv(t, "#cp-b", 66.0, 0.5);
+      rv(t, "#cp-c", 67.5, 0.5);
+      rv(t, "#cp-line", 67.5, 0.45);
+    });
+
+    // 11 funnel (70–78) — fragments 72.5, 74.0, 75.5
+    build("funnel", (t) => {
+      en(t, "#fn-eyebrow", 70.2); en(t, "#fn-h", 70.35);
+      en(t, "#fn-t1", 70.7, 0.5); en(t, "#fn-t2", 70.9, 0.5);
+      rv(t, "#fn-t3", 72.5, 0.45);
+      rv(t, "#fn-t4", 74.0, 0.45);
+      rv(t, "#fn-t5", 75.5, 0.45); rv(t, "#fn-t6", 75.5, 0.45);
+      rv(t, "#fn-side1", 72.5, 0.45); rv(t, "#fn-side2", 74.0, 0.45); rv(t, "#fn-side3", 75.5, 0.4);
+    });
+
+    // 12 comunidad (78–85) — fragment 81.0
+    build("comunidad", (t) => {
+      en(t, "#cm-eyebrow", 78.2); en(t, "#cm-h", 78.35);
+      en(t, "#cm-w1", 78.8, 0.5); en(t, "#cm-w2", 78.95, 0.5); en(t, "#cm-w3", 79.15);
+      rv(t, "#cm-grid", 81.0, 0.6);
+      rv(t, "#cm-line", 81.0, 0.5);
+    });
+
+    // 13 promociones (85–93) — fragments 88.5, 90.5
+    build("promociones", (t) => {
+      en(t, "#pr-eyebrow", 85.2); en(t, "#pr-num", 85.35, 0.9); en(t, "#pr-cap", 85.95);
+      rv(t, "#pr-dyn-label", 88.5, 0.45); rv(t, "#pr-dyn", 88.5, 0.55); rv(t, "#pr-note", 88.5, 0.45);
+      rv(t, "#pr-levels-label", 90.5, 0.45); rv(t, "#pr-levels", 90.5, 0.55);
+    });
+
+    // 14 remarketing (93–101) — fragments 96.0, 97.5, 99.0
+    build("remarketing", (t) => {
+      en(t, "#rm-eyebrow", 93.2); en(t, "#rm-h", 93.35);
+      en(t, "#rm-1", 93.8, 0.5);
+      rv(t, "#rm-2", 96.0, 0.5);
+      rv(t, "#rm-3", 97.5, 0.5);
+      rv(t, "#rm-4", 99.0, 0.5);
+      rv(t, "#rm-note", 99.0, 0.45);
+    });
+
+    // 15 referidos (101–109) — fragments 104.0, 105.5
+    build("referidos", (t) => {
+      en(t, "#rf-eyebrow", 101.2); en(t, "#rf-h", 101.35);
+      rv(t, "#rf-chain", 104.0, 0.7); rv(t, "#rf-ex", 104.0, 0.45);
+      rv(t, "#rf-msg", 105.5, 0.6);
+    });
+
+    // 16 equipo (109–116)
+    build("equipo", (t) => {
+      en(t, "#eq-eyebrow", 109.2); en(t, "#eq-h", 109.35);
+      en(t, "#eq-1", 109.7, 0.5); en(t, "#eq-2", 109.85, 0.5); en(t, "#eq-3", 110.0, 0.5);
+      en(t, "#eq-4", 110.15, 0.5); en(t, "#eq-5", 110.3, 0.5);
+      en(t, "#eq-line", 110.7);
+    });
+
+    // 17 metricas (116–124) — fragments 119.0, 121.0
+    build("metricas", (t) => {
+      en(t, "#mx-eyebrow", 116.2); en(t, "#mx-h", 116.35); en(t, "#mx-badge", 116.7);
+      rv(t, "#mx-1", 119.0, 0.4); rv(t, "#mx-2", 119.0, 0.4); rv(t, "#mx-3", 119.0, 0.4);
+      rv(t, "#mx-4", 119.0, 0.4); rv(t, "#mx-5", 119.0, 0.4); rv(t, "#mx-6", 119.0, 0.4);
+      rv(t, "#mx-7", 121.0, 0.4); rv(t, "#mx-8", 121.0, 0.4); rv(t, "#mx-9", 121.0, 0.4);
+      rv(t, "#mx-10", 121.0, 0.4); rv(t, "#mx-11", 121.0, 0.4); rv(t, "#mx-12", 121.0, 0.4);
+      rv(t, "#mx-note", 121.0, 0.45);
+    });
+
+    // 18 plan (124–132) — fragments 128.5, 130.5
+    build("plan", (t) => {
+      en(t, "#pn-eyebrow", 124.2); en(t, "#pn-h", 124.35);
+      en(t, "#pn-1", 124.8, 0.5); en(t, "#pn-2", 124.95, 0.5);
+      rv(t, "#pn-3", 128.5, 0.5); rv(t, "#pn-4", 128.5, 0.5);
+      rv(t, "#pn-strip", 130.5, 0.55);
+    });
+
+    // 19 escalamiento (132–140) — fragments 135.0, 136.5, 138.0
+    build("escalamiento", (t) => {
+      en(t, "#es-eyebrow", 132.2); en(t, "#es-h", 132.35);
+      en(t, "#es-1", 132.9, 0.5);
+      rv(t, "#es-2", 135.0, 0.5);
+      rv(t, "#es-3", 136.5, 0.5);
+      rv(t, "#es-4", 138.0, 0.5);
+      rv(t, "#es-note", 138.0, 0.45);
+    });
+
+    // 20 activaciones (140–147)
+    build("activaciones", (t) => {
+      en(t, "#ac-eyebrow", 140.2); en(t, "#ac-h", 140.35);
+      en(t, "#ac-1", 140.7, 0.5); en(t, "#ac-2", 140.85, 0.5); en(t, "#ac-3", 141.0, 0.5);
+      en(t, "#ac-chain", 141.5, 0.6); en(t, "#ac-line", 141.9);
+    });
+
+    // 21 puntacana (147–154)
+    build("puntacana", (t) => {
+      en(t, "#pc-eyebrow", 147.2); en(t, "#pc-h", 147.35);
+      en(t, "#pc-1", 147.8, 0.55); en(t, "#pc-2", 148.0, 0.55);
+      en(t, "#pc-line", 148.5);
+    });
+
+    // 22 cierre (154–162)
+    build("cierre", (t) => {
+      en(t, "#cl-eyebrow", 154.2);
+      t.fromTo("#cl-h", { opacity: 0, scale: 0.96, y: 26 }, { opacity: 1, scale: 1, y: 0, duration: 0.9, ease: EASE, immediateRender: false }, 154.4);
+      en(t, "#cl-sub", 155.0); en(t, "#cl-words", 155.4, 0.8); en(t, "#cl-foot", 155.9);
+    });
+
+    // ===== Standalone slideshow bootstrap (navegación sin engine) =====
+    (function () {
+      var sceneEls = Array.prototype.slice.call(document.querySelectorAll(".scene"));
+      var scenes = sceneEls.map(function (el) {
+        var start = parseFloat(el.getAttribute("data-start"));
+        return {
+          id: el.id,
+          comp: el.getAttribute("data-composition-id"),
+          start: start,
+          end: start + parseFloat(el.getAttribute("data-duration")),
+        };
+      });
+      function updateVisibility(t) {
+        for (var i = 0; i < scenes.length; i++) {
+          var s = scenes[i];
+          var el = document.getElementById(s.id);
+          if (!el) continue;
+          var active = t >= s.start && t < s.end;
+          el.style.opacity = active ? "1" : "0";
+          el.style.visibility = active ? "visible" : "hidden";
+          el.style.pointerEvents = active ? "auto" : "none";
+          var stl = window.__timelines[s.comp];
+          if (stl && active) stl.seek(Math.min(t, s.end - 0.001));
+        }
+      }
+      window.__hfSetTime = updateVisibility;
+      var root = gsap.timeline({ paused: true });
+      root.to({}, { duration: 162 });
+      root.eventCallback("onUpdate", function () { updateVisibility(root.time()); });
+      window.__timelines.root = root;
+      updateVisibility(0);
+      function postTimeline() {
+        if (window.parent === window) return;
+        try {
+          parent.postMessage({
+            source: "hf-preview",
+            type: "timeline",
+            durationInFrames: 162 * 30,
+            fps: 30,
+            scenes: scenes.map(function (s) { return { id: s.comp, start: s.start, duration: s.end - s.start }; }),
+          }, "*");
+        } catch (e) {}
+      }
+      if (document.readyState === "complete") setTimeout(postTimeline, 300);
+      else window.addEventListener("load", function () { setTimeout(postTimeline, 300); });
+    })();
+  </script>
+</body>
+</html>

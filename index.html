@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spinvra RD — Propuesta de Adquisición y Crecimiento</title>
+  <script src="vendor/hyperframes-player.global.js"></script>
+  <script src="vendor/hyperframes-slideshow.global.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #06070b; }
+    hyperframes-slideshow { display: block; position: fixed; inset: 0; background: #06070b; }
+    #stage {
+      position: absolute; left: 50%; top: 50%;
+      width: 1920px; height: 1080px;
+      transform: translate(-50%, -50%) scale(1);
+      transform-origin: center center;
+    }
+    hyperframes-player { position: absolute; inset: 0; width: 1920px; height: 1080px; }
+  </style>
+</head>
+<body>
+  <hyperframes-slideshow tabindex="0">
+    <div id="stage">
+      <hyperframes-player interactive src="composition/index.html"></hyperframes-player>
+    </div>
+
+    <!-- Duplicated island — keep in sync with composition/index.html -->
+    <script type="application/hyperframes-slideshow+json">
+    {
+      "slides": [
+        { "sceneId": "cover", "notes": "Apertura: propuesta de adquisición y crecimiento para Spinvra en República Dominicana. Enfatizar que es una capa adicional, no un reemplazo." },
+        { "sceneId": "resumen", "notes": "Resumen ejecutivo: activo de ~10,700 contactos + método Probar-Medir-Optimizar-Escalar + piloto de 300-500. Cerrar con los cinco motores.", "fragments": [10.0] },
+        { "sceneId": "experiencia", "notes": "Experiencia previa en el sector de casinos. Presentar como trayectoria, no como portafolio ni alianzas vigentes." },
+        { "sceneId": "activo", "notes": "Transición: la experiencia se convierte en el activo de 10,700 contactos y en la oportunidad para Spinvra." },
+        { "sceneId": "numero", "notes": "Diapositiva de impacto: 10,700 contactos potenciales. Pausa dramática. Es el activo inicial, no un límite." },
+        { "sceneId": "oportunidad", "notes": "Complementar, no competir: Spinvra ya genera visibilidad; esta propuesta añade conversión medible local." },
+        { "sceneId": "objetivo", "notes": "Pregunta central: cómo convertir ~10,700 contactos en un canal medible, optimizable y escalable.", "fragments": [44.5] },
+        { "sceneId": "metodologia", "notes": "Ciclo continuo: Probar, Medir, Optimizar, Escalar. La base se trata como activo estratégico; nunca se contacta todo de una vez." },
+        { "sceneId": "piloto", "notes": "Fase 1: piloto de 300-500 contactos. Qué probamos y qué medimos. Aclarar que son fases de alcance, no resultados garantizados.", "fragments": [58.0, 59.5] },
+        { "sceneId": "captacion", "notes": "Segmentación según datos autorizados + tres conceptos comparativos: Promoción, Comunidad, Experiencia.", "fragments": [64.5, 66.0, 67.5] },
+        { "sceneId": "funnel", "notes": "Funnel conceptual: audiencia, contacto, registro, primer depósito, comunidad, referido. Cada etapa se mide.", "fragments": [72.5, 74.0, 75.5] },
+        { "sceneId": "comunidad", "notes": "Spinvra Community: WhatsApp y Telegram como canal de valor continuo, no un grupo de enlaces.", "fragments": [81.0] },
+        { "sceneId": "promociones", "notes": "Códigos diarios US$1-US$77, dinámicas para generar recurrencia y niveles de campaña hasta Big Week como acelerador futuro.", "fragments": [88.5, 90.5] },
+        { "sceneId": "remarketing", "notes": "Cuatro estados del usuario con estrategias distintas, frecuencia controlada.", "fragments": [96.0, 97.5, 99.0] },
+        { "sceneId": "referidos", "notes": "Programa de referidos de 3 niveles como segundo motor. Ejemplo ilustrativo sobre primer depósito de US$10.", "fragments": [104.0, 105.5] },
+        { "sceneId": "equipo", "notes": "Capacidad de ejecución local: dirección, diseño, contenido, community y data. Transmite organización, no arrogancia." },
+        { "sceneId": "metricas", "notes": "Dashboard de métricas. Sin resultados inventados: placeholders ilustrativos que se llenan con datos reales.", "fragments": [119.0, 121.0] },
+        { "sceneId": "plan", "notes": "Plan de 30 días semana a semana y horizonte 30-90 días.", "fragments": [128.5, 130.5] },
+        { "sceneId": "escalamiento", "notes": "Etapas de escala progresiva: 300-500, 1,000-1,500, 2,500-3,500 y nuevos segmentos. Cada etapa se abre según resultados.", "fragments": [135.0, 136.5, 138.0] },
+        { "sceneId": "activaciones", "notes": "Segunda etapa: activaciones y promociones cruzadas medibles. Modelo de tres partes y funnel de medición." },
+        { "sceneId": "puntacana", "notes": "Punta Cana como ventaja operativa adicional. Primero validar el modelo digital; después explorar la capa física." },
+        { "sceneId": "cierre", "notes": "Cierre: 10,700 es el punto de partida. Construir un sistema de crecimiento. Probar, medir, optimizar, escalar." }
+      ],
+      "slideSequences": []
+    }
+    </script>
+  </hyperframes-slideshow>
+
+  <script>
+    // Fit the fixed 1920x1080 stage to the viewport (letterboxed).
+    (function () {
+      var stage = document.getElementById("stage");
+      function fit() {
+        var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+        stage.style.transform = "translate(-50%, -50%) scale(" + s + ")";
+      }
+      window.addEventListener("resize", fit);
+      fit();
+      // Keep keyboard focus on the slideshow element so arrow keys work.
+      var sl = document.querySelector("hyperframes-slideshow");
+      window.addEventListener("pointerdown", function () { if (sl) sl.focus(); });
+    })();
+  </script>
+</body>
+</html>
