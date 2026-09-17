@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=1920, height=1080" />
   <title>Spinvra RD — Propuesta de Adquisición y Crecimiento</title>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script src="gsap.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
@@ -1014,8 +1014,12 @@
         } catch (e) {}
       }
 
-      if (document.readyState === "complete") setTimeout(postTimeline, 300);
-      else window.addEventListener("load", function () { setTimeout(postTimeline, 300); });
+      // Publicar varias veces: si el player inicializa tarde (red lenta),
+      // un reintento posterior sigue siendo procesado por _onMessage.
+      var posted = [300, 1000, 2500, 5000, 9000];
+      posted.forEach(function (ms) { setTimeout(postTimeline, ms); });
+      if (document.readyState === "complete") setTimeout(postTimeline, 50);
+      else window.addEventListener("load", function () { setTimeout(postTimeline, 50); });
     })();
   </script>
 
