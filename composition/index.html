@@ -330,10 +330,10 @@
           <div style="font-size:60px;" class="gold">∞</div>
           <div class="klabel" style="font-size:19px; margin-top:6px;">Ciclo continuo</div>
         </div>
-        <div style="position:absolute; top:-6px; left:50%; transform:translateX(-50%);"><span class="chip" style="font-size:24px; padding:14px 30px; border-color:var(--gold-line); background:var(--gold-soft);"><span class="dot"></span>1 · Probar</span></div>
-        <div style="position:absolute; right:-58px; top:50%; transform:translateY(-50%);"><span class="chip" style="font-size:24px; padding:14px 30px;"><span class="dot"></span>2 · Medir</span></div>
-        <div style="position:absolute; bottom:-6px; left:50%; transform:translateX(-50%);"><span class="chip" style="font-size:24px; padding:14px 30px;"><span class="dot"></span>3 · Optimizar</span></div>
-        <div style="position:absolute; left:-58px; top:50%; transform:translateY(-50%);"><span class="chip" style="font-size:24px; padding:14px 30px; border-color:var(--gold-line);"><span class="dot"></span>4 · Escalar</span></div>
+        <div style="position:absolute; top:-6px; left:50%; transform:translateX(-50%);"><span id="mt-c1" class="chip" style="font-size:24px; padding:14px 30px; border-color:var(--gold-line); background:var(--gold-soft);"><span class="dot"></span>1 · Probar</span></div>
+        <div style="position:absolute; right:-58px; top:50%; transform:translateY(-50%);"><span id="mt-c2" class="chip" style="font-size:24px; padding:14px 30px;"><span class="dot"></span>2 · Medir</span></div>
+        <div style="position:absolute; bottom:-6px; left:50%; transform:translateX(-50%);"><span id="mt-c3" class="chip" style="font-size:24px; padding:14px 30px;"><span class="dot"></span>3 · Optimizar</span></div>
+        <div style="position:absolute; left:-58px; top:50%; transform:translateY(-50%);"><span id="mt-c4" class="chip" style="font-size:24px; padding:14px 30px; border-color:var(--gold-line);"><span class="dot"></span>4 · Escalar</span></div>
       </div>
       <footer class="foot" style="grid-column:1 / -1;"><span>Spinvra RD · Propuesta de crecimiento</span><span class="pg">08 / 22</span></footer>
     </div>
@@ -965,6 +965,9 @@
     })();
   </script>
 
+  <!-- ── Multilenguaje ES/EN/PT ── -->
+  <script src="lang.js"></script>
+
   <!-- ── Bootstrap postMessage for the slideshow component ── -->
   <script>
     (function () {
@@ -1013,6 +1016,39 @@
 
       if (document.readyState === "complete") setTimeout(postTimeline, 300);
       else window.addEventListener("load", function () { setTimeout(postTimeline, 300); });
+    })();
+  </script>
+
+  <!-- ── Tap / swipe bridge: reenvía gestos al wrapper (el iframe consume los toques) ── -->
+  <script>
+    (function () {
+      if (window.parent === window) return;
+      var sx = 0, sy = 0, tracking = false, swallowClick = false;
+      document.addEventListener("touchstart", function (e) {
+        if (!e.touches.length) return;
+        sx = e.touches[0].clientX; sy = e.touches[0].clientY; tracking = true;
+      }, { passive: true });
+      document.addEventListener("touchend", function (e) {
+        if (!tracking) return;
+        tracking = false;
+        swallowClick = true;
+        setTimeout(function () { swallowClick = false; }, 700);
+        var t = e.changedTouches && e.changedTouches[0];
+        if (!t) return;
+        var dx = t.clientX - sx, dy = t.clientY - sy;
+        try {
+          if (dx < -40) parent.postMessage({ type: "hf-gesture", action: "next" }, "*");
+          else if (dx > 40) parent.postMessage({ type: "hf-gesture", action: "prev" }, "*");
+          else if (Math.abs(dx) <= 40 && Math.abs(dy) <= 40) parent.postMessage({ type: "hf-gesture", action: "next" }, "*");
+        } catch (err) {}
+      }, { passive: true });
+      // Ratón / trackpad (híbridos): clic = avanzar.
+      // Ignora el click sintético que generan los navegadores tras un tap táctil
+      // (evita doble avance).
+      document.addEventListener("click", function () {
+        if (swallowClick) return;
+        try { parent.postMessage({ type: "hf-gesture", action: "next" }, "*"); } catch (e) {}
+      });
     })();
   </script>
 </body>
