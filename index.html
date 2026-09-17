@@ -375,12 +375,14 @@
       function pressNext() {
         var b = document.querySelector('[data-hf-next]');
         if (b) { b.click(); return true; }
-        try { sl.next(); } catch (e) {}
+        try { if (typeof sl.next === "function") { sl.next(); return true; } } catch (e) {}
+        try { sl.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", code: "ArrowRight", keyCode: 39, which: 39, bubbles: true })); } catch (e) {}
       }
       function pressPrev() {
         var b = document.querySelector('[data-hf-prev]');
         if (b) { b.click(); return true; }
-        try { sl.prev(); } catch (e) {}
+        try { if (typeof sl.prev === "function") { sl.prev(); return true; } } catch (e) {}
+        try { sl.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", code: "ArrowLeft", keyCode: 37, which: 37, bubbles: true })); } catch (e) {}
       }
       var taps = 0;
       window.addEventListener("message", function (e) {
