@@ -2,14 +2,22 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#06070b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <title>Spinvra RD — Propuesta de Adquisición y Crecimiento</title>
   <script src="vendor/hyperframes-player.global.js"></script>
   <script src="vendor/hyperframes-slideshow.global.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { width: 100%; height: 100%; overflow: hidden; background: #06070b; }
-    hyperframes-slideshow { display: block; position: fixed; inset: 0; background: #06070b; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #06070b; overscroll-behavior: none; }
+    hyperframes-slideshow {
+      display: block; position: fixed; inset: 0; background: #06070b;
+      /* Safe areas iPhone (notch / home indicator) */
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
     #stage {
       position: absolute; left: 50%; top: 50%;
       width: 1920px; height: 1080px;
@@ -17,6 +25,28 @@
       transform-origin: center center;
     }
     hyperframes-player { position: absolute; inset: 0; width: 1920px; height: 1080px; }
+
+    /* Rotate hint — only on narrow portrait screens (phones held upright) */
+    #rotate-hint {
+      position: fixed; top: calc(12px + env(safe-area-inset-top)); left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      display: none;
+      align-items: center; gap: 10px;
+      background: rgba(13, 17, 25, 0.92);
+      border: 1px solid rgba(240, 178, 62, 0.38);
+      color: #f4f5f7;
+      font-family: "Inter", system-ui, -apple-system, sans-serif;
+      font-size: 14px; font-weight: 600; letter-spacing: 0.02em;
+      padding: 10px 18px; border-radius: 999px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    #rotate-hint .ico { font-size: 17px; }
+    @media (orientation: portrait) and (max-width: 860px) {
+      #rotate-hint { display: inline-flex; }
+    }
   </style>
 </head>
 <body>
@@ -57,17 +87,28 @@
     </script>
   </hyperframes-slideshow>
 
+  <div id="rotate-hint"><span class="ico">📱↔️</span> Gira tu teléfono para ver mejor</div>
+
   <script>
     // Fit the fixed 1920x1080 stage to the viewport (letterboxed).
+    // Uses visualViewport when available so iOS Safari's collapsible
+    // address bar never crops or leaves gaps.
     (function () {
       var stage = document.getElementById("stage");
       function fit() {
-        var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+        var w = window.innerWidth, h = window.innerHeight;
+        if (window.visualViewport) {
+          w = Math.max(w, window.visualViewport.width);
+          h = Math.max(h, window.visualViewport.height);
+        }
+        var s = Math.min(w / 1920, h / 1080);
         stage.style.transform = "translate(-50%, -50%) scale(" + s + ")";
       }
       window.addEventListener("resize", fit);
+      window.addEventListener("orientationchange", function () { setTimeout(fit, 250); });
+      if (window.visualViewport) window.visualViewport.addEventListener("resize", fit);
       fit();
-      // Keep keyboard focus on the slideshow element so arrow keys work.
+      // Keep keyboard focus on the slideshow element so arrow keys work (desktop).
       var sl = document.querySelector("hyperframes-slideshow");
       window.addEventListener("pointerdown", function () { if (sl) sl.focus(); });
     })();
